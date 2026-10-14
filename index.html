@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +9,9 @@
 
   <style>
     :root {
-      /* Adjust these values to fit your background screen */
+      /* Position of the countdown over the background screen */
       --screen-left: 37.3%;
-      --screen-top: 32.8%;
+      --screen-top: 34.2%;
       --screen-width: 44.5%;
       --screen-height: 28.5%;
 
@@ -38,7 +39,7 @@
       isolation: isolate;
     }
 
-    /* Place background.jpg in the same folder as index.html */
+    /* Keep background.jpg beside index.html */
     .scene {
       position: absolute;
       inset: 0;
@@ -61,7 +62,7 @@
         );
     }
 
-    /* Transparent overlay positioned over the physical screen */
+    /* Countdown positioned over the physical display */
     .display-content {
       position: absolute;
       left: var(--screen-left);
@@ -79,13 +80,17 @@
       padding: 1.5% 2%;
 
       color: var(--amber);
-
       text-shadow:
         0 0 2px rgba(255, 202, 116, 0.95),
         0 0 8px rgba(255, 169, 61, 0.42),
         0 0 18px rgba(255, 153, 36, 0.15);
 
-      transform: perspective(900px) rotateY(-1deg);
+      /* Slight tilt to follow the angled display */
+      transform:
+        perspective(900px)
+        rotate(-4deg)
+        rotateY(-2deg)
+        skewX(-2deg);
       transform-origin: center;
     }
 
@@ -216,18 +221,11 @@
 
   <script>
     /*
-      CONFIGURATION
-
-      This is a provisional example date, NOT an official
-      ICSE examination date.
-
-      Format:
-      new Date(year, month, day, hours, minutes, seconds)
-
+      PROVISIONAL TARGET DATE
+      This is an example date, not an official ICSE exam date.
       JavaScript months start at zero:
       0 = January, 1 = February, 2 = March, etc.
-
-      The countdown uses your computer's local time.
+      The countdown uses your device's local time.
     */
 
     const TARGET_DATE = new Date(2027, 1, 17, 11, 0, 0);
@@ -256,14 +254,12 @@
 
         elements.status.textContent = "EXAM DAY";
         elements.display.classList.add("complete");
-
         return;
       }
 
       elements.display.classList.remove("complete");
 
       const totalSeconds = Math.floor(remainingMs / 1000);
-
       const days = Math.floor(totalSeconds / 86400);
       const hours = Math.floor((totalSeconds % 86400) / 3600);
       const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -275,10 +271,7 @@
       elements.seconds.textContent = pad2(seconds);
     }
 
-    // Display immediately, then refresh regularly.
     updateCountdown();
-
-    // Refresh four times per second to keep the display synchronized.
     setInterval(updateCountdown, 250);
   </script>
 </body>
