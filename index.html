@@ -43,6 +43,7 @@ html, body {
   width: 100%;
   height: 100%;
   object-fit: fill;
+  display: block;
 }
 
 .overlay {
@@ -64,8 +65,8 @@ html, body {
   fill: #ffe7ac;
   font-size: 76px;
   font-weight: 800;
-  text-anchor: middle;
   font-variant-numeric: tabular-nums;
+  text-anchor: middle;
   filter: url(#goldGlow);
 }
 
@@ -79,8 +80,7 @@ html, body {
 
 .colon {
   fill: #d9ad4b;
-  font-size: 43px;
-  font-weight: 500;
+  font-size: 38px;
   text-anchor: middle;
 }
 
@@ -158,46 +158,46 @@ html, body {
           d="M 420 630 Q 800 660 1180 630"/>
       </defs>
 
-      <!-- Heading -->
+      <!-- Curved heading -->
       <text class="heading">
         <textPath href="#headingPath" startOffset="50%">
           EXAM COUNTDOWN
         </textPath>
       </text>
 
-      <!-- DAYS: first column -->
+      <!-- DAYS -->
       <text id="days" class="number"
-        x="250" y="432">000</text>
+        x="370" y="432">000</text>
       <text class="label"
-        x="250" y="470">DAYS</text>
+        x="370" y="470">DAYS</text>
 
-      <!-- HOURS: second column -->
+      <!-- HOURS -->
       <text id="hours" class="number"
-        x="615" y="397">00</text>
+        x="655" y="397">00</text>
       <text class="label"
-        x="615" y="435">HRS</text>
+        x="655" y="435">HRS</text>
 
-      <!-- MINUTES: third column -->
+      <!-- MINUTES -->
       <text id="minutes" class="number"
-        x="985" y="397">00</text>
+        x="945" y="397">00</text>
       <text class="label"
-        x="985" y="435">MIN</text>
+        x="945" y="435">MIN</text>
 
-      <!-- SECONDS: fourth column -->
+      <!-- SECONDS -->
       <text id="seconds" class="number"
-        x="1350" y="432">00</text>
+        x="1230" y="432">00</text>
       <text class="label"
-        x="1350" y="470">SEC</text>
+        x="1230" y="470">SEC</text>
 
-      <!-- Separators are centred in the gaps -->
+      <!-- Separators centred in the gaps -->
       <text class="colon"
-        x="432" y="414">:</text>
+        x="512" y="414">:</text>
 
       <text class="colon"
         x="800" y="379">:</text>
 
       <text class="colon"
-        x="1168" y="414">:</text>
+        x="1088" y="414">:</text>
 
       <!-- Exam title -->
       <text class="exam" x="800" y="555">
@@ -215,8 +215,8 @@ html, body {
 </div>
 
 <script>
-/* Target: 17 February 2027 at 12:00 PM local time.
-   Confirm the official exam date before relying on this. */
+/* 17 February 2027, 12:00 PM local time.
+   Confirm the official exam date before relying on it. */
 const examDate = new Date(2027, 1, 17, 12, 0, 0);
 
 const daysEl = document.getElementById("days");
@@ -246,5 +246,6 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 </script>
+
 </body>
 </html>
