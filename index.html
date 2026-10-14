@@ -3,18 +3,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#050707">
-<title>ICSE 2027 Countdown</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#11100c">
+<title>ICSE 2027 | Exam Countdown</title>
 
 <style>
 :root {
-  --screen-left: 35%;
-  --screen-top: 36%;
-  --screen-width: 46%;
-  --screen-height: 27%;
+  --gold: #f4c95d;
+  --bright-gold: #ffe6a0;
+  --soft-gold: #d8ad4c;
+  --black: #11100c;
 }
 
+/* Basic setup */
 * {
   box-sizing: border-box;
 }
@@ -24,125 +25,204 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #050707;
-  font-family: Arial, sans-serif;
+  background: var(--black);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.scene {
-  position: fixed;
+/* A 3:2 stage keeps the overlay aligned with the background
+   on both portrait and landscape screens. */
+.stage {
+  position: absolute;
+  width: min(100vw, 150vh);
+  aspect-ratio: 3 / 2;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  container-type: inline-size;
+  overflow: hidden;
+  background: var(--black);
+}
+
+/* Put the clean study-room image in the same folder
+   as this HTML file, named background.jpg. */
+.background {
+  position: absolute;
   inset: 0;
-  background: #050707 url("./background.jpg")
-    center center / contain no-repeat;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
-/* Main display placement */
-.display-content {
-  position: fixed;
-  left: var(--screen-left);
-  top: var(--screen-top);
-  width: var(--screen-width);
-  height: var(--screen-height);
+/* Counter positioned on the empty wall */
+.counter {
+  position: absolute;
+  left: 31%;
+  top: 26%;
+  width: 52%;
+  height: 40%;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
   text-align: center;
-  overflow: visible;
+  color: var(--gold);
   padding: 1%;
-
-  color: #ffd18a;
-  text-shadow: 0 0 5px rgba(255, 176, 70, 0.7);
 }
 
-/* Keep the top heading's appearance unchanged */
+/* Small heading */
 .eyebrow {
-  margin: 0 0 5px;
-  font-size: clamp(7px, 1.05vw, 17px);
-  font-weight: bold;
-  letter-spacing: 0.2em;
+  margin: 0 0 2.2%;
+  font-size: 1.35cqw;
+  font-weight: 700;
+  letter-spacing: 0.24em;
   white-space: nowrap;
-
-  transform: rotate(-3deg);
-  transform-origin: center;
+  color: var(--gold);
 }
 
-/* Bigger countdown numbers */
+/* Timer row */
 .timer {
   display: flex;
+  align-items: flex-start;
   justify-content: center;
-  align-items: center;
-  gap: clamp(2px, 0.5vw, 8px);
   width: 100%;
+  gap: 0.65cqw;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 
-.value {
-  font-size: clamp(17px, 3.5vw, 54px);
+.unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.number {
+  font-size: 4.05cqw;
   font-weight: 700;
   line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--bright-gold);
+  text-shadow: 0 0 12px rgba(244, 201, 93, 0.25);
 }
 
 .separator {
-  font-size: clamp(15px, 2.8vw, 42px);
-  font-weight: 500;
+  font-size: 3.5cqw;
   line-height: 1;
-  margin-top: -0.12em;
+  color: var(--soft-gold);
+  margin-top: 0.05cqw;
 }
 
-/* Straighten the bottom two lines */
-.headline {
-  margin: 8px 0 0;
-  font-size: clamp(12px, 2.1vw, 32px);
-  font-weight: bold;
+.unit-label {
+  margin-top: 0.65cqw;
+  font-size: 1.15cqw;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+
+/* Exam title */
+.exam-title {
+  margin: 3.2% 0 0;
+  font-size: 3.1cqw;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  color: var(--bright-gold);
   white-space: nowrap;
-
-  transform: none;
-  letter-spacing: 0.02em;
 }
 
-.subline {
-  margin: 5px 0 0;
-  font-size: clamp(7px, 1.3vw, 20px);
+/* Motivational line */
+.motivation {
+  margin: 1.4% 0 0;
+  font-size: 1.55cqw;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  color: var(--gold);
   white-space: nowrap;
-
-  transform: none;
-  letter-spacing: 0;
 }
 
-@media (max-aspect-ratio: 4/3) {
-  .scene {
-    background-size: 100% auto;
+/* Small-screen adjustment */
+@media (max-width: 480px) {
+  .counter {
+    left: 29%;
+    width: 55%;
+  }
+
+  .timer {
+    gap: 0.5cqw;
+  }
+
+  .number {
+    font-size: 4cqw;
   }
 }
 </style>
 </head>
 
 <body>
-<div class="scene"></div>
 
-<main class="display-content">
-  <p class="eyebrow">EXAM COUNTDOWN</p>
+<div class="stage">
+  <img
+    class="background"
+    src="./background.jpg"
+    alt=""
+  >
 
-  <div class="timer">
-    <span class="value" id="days">000</span>
-    <span class="separator">:</span>
-    <span class="value" id="hours">00</span>
-    <span class="separator">:</span>
-    <span class="value" id="minutes">00</span>
-    <span class="separator">:</span>
-    <span class="value" id="seconds">00</span>
-  </div>
+  <main class="counter">
+    <p class="eyebrow">EXAM COUNTDOWN</p>
 
-  <p class="headline">ICSE 2027</p>
-  <p class="subline">COUNTING DOWN TO EXAM DAY</p>
-</main>
+    <div class="timer" aria-label="Time remaining">
+      <div class="unit">
+        <span class="number" id="days">000</span>
+        <span class="unit-label">DAYS</span>
+      </div>
+
+      <span class="separator">:</span>
+
+      <div class="unit">
+        <span class="number" id="hours">00</span>
+        <span class="unit-label">HRS</span>
+      </div>
+
+      <span class="separator">:</span>
+
+      <div class="unit">
+        <span class="number" id="minutes">00</span>
+        <span class="unit-label">MIN</span>
+      </div>
+
+      <span class="separator">:</span>
+
+      <div class="unit">
+        <span class="number" id="seconds">00</span>
+        <span class="unit-label">SEC</span>
+      </div>
+    </div>
+
+    <p class="exam-title">ICSE 2027</p>
+
+    <p class="motivation">
+      YOUR FUTURE IS BUILT TODAY
+    </p>
+  </main>
+</div>
 
 <script>
-/* Target: 17 February 2027 at 12:00 PM local time.
-   This is a provisional date, not a confirmed official exam date. */
+/*
+  Provisional target: 17 February 2027, 12:00 PM.
+  Uses your device's local time.
+  This is not confirmation of the official exam date.
+*/
 const targetDate = new Date(2027, 1, 17, 12, 0, 0);
+
+const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minutesEl = document.getElementById("minutes");
+const secondsEl = document.getElementById("seconds");
 
 function updateCountdown() {
   const remaining = Math.max(
@@ -157,21 +237,15 @@ function updateCountdown() {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  document.getElementById("days").textContent =
-    String(days).padStart(3, "0");
-
-  document.getElementById("hours").textContent =
-    String(hours).padStart(2, "0");
-
-  document.getElementById("minutes").textContent =
-    String(minutes).padStart(2, "0");
-
-  document.getElementById("seconds").textContent =
-    String(seconds).padStart(2, "0");
+  daysEl.textContent = String(days).padStart(3, "0");
+  hoursEl.textContent = String(hours).padStart(2, "0");
+  minutesEl.textContent = String(minutes).padStart(2, "0");
+  secondsEl.textContent = String(seconds).padStart(2, "0");
 }
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
 </script>
+
 </body>
 </html>
