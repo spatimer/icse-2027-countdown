@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080808">
 <title>ICSE 2027 Countdown</title>
 
@@ -34,6 +34,7 @@ html, body {
   width: min(100vw, 177.7778vh);
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  background: #080808;
 }
 
 .background {
@@ -45,12 +46,12 @@ html, body {
   display: block;
 }
 
+/* Overlay uses the same 16:9 coordinates as the background */
 .overlay {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
 }
 
 .heading {
@@ -61,13 +62,20 @@ html, body {
   text-anchor: middle;
 }
 
-.timer {
+.timer-number {
   fill: #ffe7ac;
   font-size: 76px;
   font-weight: 800;
-  font-variant-numeric: tabular-nums;
   text-anchor: middle;
+  font-variant-numeric: tabular-nums;
   filter: url(#goldGlow);
+}
+
+.colon {
+  fill: #d9ad4b;
+  font-size: 48px;
+  font-weight: 500;
+  text-anchor: middle;
 }
 
 .labels {
@@ -95,11 +103,31 @@ html, body {
 }
 
 @media (max-width: 600px) {
-  .heading { font-size: 25px; }
-  .timer { font-size: 76px; }
-  .labels { font-size: 19px; }
-  .exam { font-size: 36px; }
-  .quote { font-size: 20px; }
+  .heading {
+    font-size: 24px;
+    letter-spacing: 4px;
+  }
+
+  .timer-number {
+    font-size: 76px;
+  }
+
+  .colon {
+    font-size: 48px;
+  }
+
+  .labels {
+    font-size: 19px;
+    letter-spacing: 2px;
+  }
+
+  .exam {
+    font-size: 36px;
+  }
+
+  .quote {
+    font-size: 20px;
+  }
 }
 </style>
 </head>
@@ -109,114 +137,105 @@ html, body {
   <div class="scene">
 
     <!-- Keep background.jpg in the same folder as index.html -->
-    <img class="background"
-         src="./background.jpg"
-         alt="Black and gold background">
+    <img
+      class="background"
+      src="./background.jpg"
+      alt="Black and gold background"
+    >
 
-    <svg class="overlay"
-         viewBox="0 0 1600 900"
-         preserveAspectRatio="none"
-         aria-label="ICSE 2027 countdown">
-
+    <svg
+      class="overlay"
+      viewBox="0 0 1600 900"
+      preserveAspectRatio="none"
+      role="img"
+      aria-label="ICSE 2027 exam countdown"
+    >
       <defs>
         <filter id="goldGlow"
-                x="-20%" y="-30%"
-                width="140%" height="160%">
-          <feGaussianBlur stdDeviation="2"
-                          result="blur"/>
+          x="-20%" y="-30%"
+          width="140%" height="160%">
+          <feGaussianBlur stdDeviation="2" result="blur"/>
           <feMerge>
             <feMergeNode in="blur"/>
             <feMergeNode in="SourceGraphic"/>
           </feMerge>
         </filter>
 
-        <!-- Main curved line -->
+        <!-- Gentle curve for the heading -->
         <path id="headingPath"
-              d="M 400 330 Q 800 285 1200 330"/>
+          d="M 400 330 Q 800 285 1200 330"/>
 
+        <!-- Gentle river-like curve for the countdown -->
         <path id="timerPath"
-              d="M 300 445 Q 800 365 1300 445"/>
-
-        <!-- Labels use the SAME curve, shifted down -->
-        <path id="labelsPath"
-              d="M 300 482 Q 800 402 1300 482"/>
-
-        <path id="examPath"
-              d="M 500 565 Q 800 545 1100 565"/>
+          d="M 300 445 Q 800 365 1300 445"/>
 
         <path id="quotePath"
-              d="M 420 630 Q 800 660 1180 630"/>
+          d="M 420 630 Q 800 660 1180 630"/>
       </defs>
 
+      <!-- Curved heading -->
       <text class="heading">
-        <textPath href="#headingPath"
-                  startOffset="50%">
+        <textPath href="#headingPath" startOffset="50%">
           EXAM COUNTDOWN
         </textPath>
       </text>
 
-      <text class="timer">
-        <textPath id="timerText"
-                  href="#timerPath"
-                  startOffset="50%">
-          000 : 00 : 00 : 00
-        </textPath>
+      <!--
+        Each number and label share the same horizontal centre.
+        Their individual positions follow the curved layout.
+      -->
+
+      <!-- DAYS column -->
+      <text id="daysNumber" class="timer-number"
+        x="400" y="428">000</text>
+      <text class="labels" x="400" y="463">DAYS</text>
+
+      <!-- Hours column -->
+      <text id="hoursNumber" class="timer-number"
+        x="665" y="389">00</text>
+      <text class="labels" x="665" y="424">HRS</text>
+
+      <!-- Minutes column -->
+      <text id="minutesNumber" class="timer-number"
+        x="935" y="389">00</text>
+      <text class="labels" x="935" y="424">MIN</text>
+
+      <!-- Seconds column -->
+      <text id="secondsNumber" class="timer-number"
+        x="1200" y="428">00</text>
+      <text class="labels" x="1200" y="463">SEC</text>
+
+      <!-- Smaller colons between the number groups -->
+      <text class="colon" x="535" y="407">:</text>
+      <text class="colon" x="800" y="368">:</text>
+      <text class="colon" x="1068" y="407">:</text>
+
+      <!-- Exam title -->
+      <text class="exam" x="800" y="555">
+        ICSE 2027
       </text>
 
-      <!-- Four separate labels, individually aligned
-           beneath the corresponding curved number groups -->
-      <text class="labels">
-        <textPath href="#labelsPath"
-                  startOffset="36%">
-          DAYS
-        </textPath>
-      </text>
-
-      <text class="labels">
-        <textPath href="#labelsPath"
-                  startOffset="46%">
-          HRS
-        </textPath>
-      </text>
-
-      <text class="labels">
-        <textPath href="#labelsPath"
-                  startOffset="55%">
-          MIN
-        </textPath>
-      </text>
-
-      <text class="labels">
-        <textPath href="#labelsPath"
-                  startOffset="64%">
-          SEC
-        </textPath>
-      </text>
-
-      <text class="exam">
-        <textPath href="#examPath"
-                  startOffset="50%">
-          ICSE 2027
-        </textPath>
-      </text>
-
+      <!-- Motivational quote -->
       <text class="quote">
-        <textPath href="#quotePath"
-                  startOffset="50%">
+        <textPath href="#quotePath" startOffset="50%">
           SMALL STEPS TODAY. BIG RESULTS TOMORROW.
         </textPath>
       </text>
-
     </svg>
   </div>
 </div>
 
 <script>
-/* Target: 17 February 2027 at 12:00 PM local time.
-   Update this if the official exam date is different. */
+/*
+  Target: 17 February 2027 at 12:00 PM local time.
+  This is a provisional date; verify the official exam schedule.
+*/
 const examDate = new Date(2027, 1, 17, 12, 0, 0);
 
-const timerText = document.getElementById("timerText");
+const daysEl = document.getElementById("daysNumber");
+const hoursEl = document.getElementById("hoursNumber");
+const minutesEl = document.getElementById("minutesNumber");
+const secondsEl = document.getElementById("secondsNumber");
 
 function updateCountdown() {
   const remaining = Math.max(
@@ -224,18 +243,17 @@ function updateCountdown() {
     examDate.getTime() - Date.now()
   );
 
-  const total = Math.floor(remaining / 1000);
+  const totalSeconds = Math.floor(remaining / 1000);
 
-  const days = Math.floor(total / 86400);
-  const hours = Math.floor((total % 86400) / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
-  const seconds = total % 60;
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-  timerText.textContent =
-    String(days).padStart(3, "0") + " : " +
-    String(hours).padStart(2, "0") + " : " +
-    String(minutes).padStart(2, "0") + " : " +
-    String(seconds).padStart(2, "0");
+  daysEl.textContent = String(days).padStart(3, "0");
+  hoursEl.textContent = String(hours).padStart(2, "0");
+  minutesEl.textContent = String(minutes).padStart(2, "0");
+  secondsEl.textContent = String(seconds).padStart(2, "0");
 }
 
 updateCountdown();
