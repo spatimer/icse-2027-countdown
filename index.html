@@ -3,19 +3,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#11100c">
-<title>ICSE 2027 | Exam Countdown</title>
+<title>ICSE 2027 Countdown</title>
 
 <style>
-:root {
-  --gold: #f4c95d;
-  --bright-gold: #ffe6a0;
-  --soft-gold: #d8ad4c;
-  --black: #11100c;
-}
-
-/* Basic setup */
 * {
   box-sizing: border-box;
 }
@@ -25,12 +17,11 @@ html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: var(--black);
+  background: #11100c;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* A 3:2 stage keeps the overlay aligned with the background
-   on both portrait and landscape screens. */
+/* Keep the full background image proportional */
 .stage {
   position: absolute;
   width: min(100vw, 150vh);
@@ -40,55 +31,51 @@ html, body {
   transform: translate(-50%, -50%);
   container-type: inline-size;
   overflow: hidden;
-  background: var(--black);
+  background: #11100c;
 }
 
-/* Put the clean study-room image in the same folder
-   as this HTML file, named background.jpg. */
 .background {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
 }
 
-/* Counter positioned on the empty wall */
+/* Counter position */
 .counter {
   position: absolute;
-  left: 31%;
-  top: 26%;
-  width: 52%;
-  height: 40%;
+  left: 23%;
+  top: 25%;
+  width: 65%;
+  height: 43%;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   text-align: center;
-  color: var(--gold);
   padding: 1%;
+  color: #f4c95d;
 }
 
-/* Small heading */
+/* Heading */
 .eyebrow {
-  margin: 0 0 2.2%;
-  font-size: 1.35cqw;
+  margin: 0 0 2%;
+  font-size: 1.65cqw;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   white-space: nowrap;
-  color: var(--gold);
+  color: #f4c95d;
 }
 
-/* Timer row */
+/* Countdown numbers */
 .timer {
   display: flex;
-  align-items: flex-start;
   justify-content: center;
+  align-items: flex-start;
+  gap: 0.55cqw;
   width: 100%;
-  gap: 0.65cqw;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -97,67 +84,108 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 0;
 }
 
 .number {
-  font-size: 4.05cqw;
+  font-size: 5.6cqw;
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.035em;
-  color: var(--bright-gold);
-  text-shadow: 0 0 12px rgba(244, 201, 93, 0.25);
+  color: #ffe7a6;
+  text-shadow: 0 0 10px rgba(244, 201, 93, 0.3);
 }
 
 .separator {
-  font-size: 3.5cqw;
+  font-size: 4.8cqw;
+  font-weight: 600;
   line-height: 1;
-  color: var(--soft-gold);
-  margin-top: 0.05cqw;
+  color: #f4c95d;
+  margin-top: 0.1cqw;
 }
 
 .unit-label {
-  margin-top: 0.65cqw;
-  font-size: 1.15cqw;
+  margin-top: 0.7cqw;
+  font-size: 1.5cqw;
   letter-spacing: 0.12em;
-  color: var(--gold);
+  color: #f4c95d;
 }
 
 /* Exam title */
 .exam-title {
-  margin: 3.2% 0 0;
-  font-size: 3.1cqw;
+  margin: 3% 0 0;
+  font-size: 4.2cqw;
   line-height: 1.1;
   font-weight: 800;
-  letter-spacing: 0.035em;
-  color: var(--bright-gold);
+  letter-spacing: 0.025em;
+  color: #ffe3a0;
   white-space: nowrap;
 }
 
-/* Motivational line */
+/* Motivational message */
 .motivation {
-  margin: 1.4% 0 0;
-  font-size: 1.55cqw;
+  margin: 1.5% 0 0;
+  font-size: 1.9cqw;
   line-height: 1.25;
-  font-weight: 600;
-  letter-spacing: 0.055em;
-  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  color: #f4c95d;
   white-space: nowrap;
 }
 
-/* Small-screen adjustment */
+/* Sound control */
+.sound-button {
+  position: fixed;
+  z-index: 5;
+  right: 12px;
+  bottom: 16px;
+  padding: 10px 15px;
+  border: 1px solid #c59b40;
+  border-radius: 24px;
+  background: #17140d;
+  color: #ffe3a0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #0008;
+}
+
+.sound-button:active {
+  background: #3a2c12;
+}
+
 @media (max-width: 480px) {
   .counter {
-    left: 29%;
-    width: 55%;
+    left: 21%;
+    width: 69%;
+    top: 25%;
   }
 
   .timer {
-    gap: 0.5cqw;
+    gap: 0.45cqw;
   }
 
   .number {
-    font-size: 4cqw;
+    font-size: 5.4cqw;
+  }
+
+  .separator {
+    font-size: 4.6cqw;
+  }
+
+  .eyebrow {
+    font-size: 1.7cqw;
+  }
+
+  .unit-label {
+    font-size: 1.55cqw;
+  }
+
+  .exam-title {
+    font-size: 4.1cqw;
+  }
+
+  .motivation {
+    font-size: 1.8cqw;
   }
 }
 </style>
@@ -166,11 +194,7 @@ html, body {
 <body>
 
 <div class="stage">
-  <img
-    class="background"
-    src="./background.jpg"
-    alt=""
-  >
+  <img class="background" src="./background.jpg" alt="">
 
   <main class="counter">
     <p class="eyebrow">EXAM COUNTDOWN</p>
@@ -204,19 +228,18 @@ html, body {
     </div>
 
     <p class="exam-title">ICSE 2027</p>
-
-    <p class="motivation">
-      YOUR FUTURE IS BUILT TODAY
-    </p>
+    <p class="motivation">YOUR FUTURE IS BUILT TODAY</p>
   </main>
 </div>
 
+<button class="sound-button" id="soundButton"
+        type="button" aria-pressed="false">
+  ♫ Sound: Off
+</button>
+
 <script>
-/*
-  Provisional target: 17 February 2027, 12:00 PM.
-  Uses your device's local time.
-  This is not confirmation of the official exam date.
-*/
+/* Target: 17 February 2027 at 12:00 PM local time.
+   Provisional date, not official exam-date confirmation. */
 const targetDate = new Date(2027, 1, 17, 12, 0, 0);
 
 const daysEl = document.getElementById("days");
@@ -232,16 +255,86 @@ function updateCountdown() {
 
   const totalSeconds = Math.floor(remaining / 1000);
 
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+  daysEl.textContent =
+    String(Math.floor(totalSeconds / 86400)).padStart(3, "0");
 
-  daysEl.textContent = String(days).padStart(3, "0");
-  hoursEl.textContent = String(hours).padStart(2, "0");
-  minutesEl.textContent = String(minutes).padStart(2, "0");
-  secondsEl.textContent = String(seconds).padStart(2, "0");
+  hoursEl.textContent =
+    String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, "0");
+
+  minutesEl.textContent =
+    String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+
+  secondsEl.textContent =
+    String(totalSeconds % 60).padStart(2, "0");
 }
+
+/* Optional soft electronic clock tick */
+const soundButton = document.getElementById("soundButton");
+let soundOn = false;
+let audioContext = null;
+let tickInterval = null;
+
+function playTick() {
+  if (!soundOn || !audioContext) return;
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(
+    850, audioContext.currentTime
+  );
+
+  gain.gain.setValueAtTime(
+    0.0001, audioContext.currentTime
+  );
+  gain.gain.exponentialRampToValueAtTime(
+    0.035, audioContext.currentTime + 0.01
+  );
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001, audioContext.currentTime + 0.07
+  );
+
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.08);
+}
+
+soundButton.addEventListener("click", async () => {
+  if (!audioContext) {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      soundButton.textContent = "Sound unsupported";
+      return;
+    }
+
+    audioContext = new AudioContextClass();
+  }
+
+  if (soundOn) {
+    soundOn = false;
+    clearInterval(tickInterval);
+    tickInterval = null;
+    soundButton.textContent = "♫ Sound: Off";
+    soundButton.setAttribute("aria-pressed", "false");
+  } else {
+    await audioContext.resume();
+    soundOn = true;
+    playTick();
+
+    tickInterval = setInterval(playTick, 1000);
+    soundButton.textContent = "♫ Sound: On";
+    soundButton.setAttribute("aria-pressed", "true");
+  }
+});
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
