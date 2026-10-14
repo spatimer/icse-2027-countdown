@@ -35,6 +35,7 @@ html, body {
     center center / contain no-repeat;
 }
 
+/* Main display placement */
 .display-content {
   position: fixed;
   left: var(--screen-left);
@@ -47,24 +48,26 @@ html, body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
   padding: 1%;
 
   color: #ffd18a;
   text-shadow: 0 0 5px rgba(255, 176, 70, 0.7);
-
-  transform: rotate(-3deg) skewX(-1deg);
-  transform-origin: center;
 }
 
+/* Keep the top heading's appearance unchanged */
 .eyebrow {
   margin: 0 0 5px;
   font-size: clamp(7px, 1.05vw, 17px);
   font-weight: bold;
   letter-spacing: 0.2em;
   white-space: nowrap;
+
+  transform: rotate(-3deg);
+  transform-origin: center;
 }
 
+/* Bigger countdown numbers */
 .timer {
   display: flex;
   justify-content: center;
@@ -76,29 +79,36 @@ html, body {
 }
 
 .value {
-  font-size: clamp(14px, 3vw, 48px);
-  font-weight: 600;
+  font-size: clamp(17px, 3.5vw, 54px);
+  font-weight: 700;
   line-height: 1.05;
 }
 
 .separator {
-  font-size: clamp(12px, 2.4vw, 38px);
+  font-size: clamp(15px, 2.8vw, 42px);
   font-weight: 500;
   line-height: 1;
-  margin-top: -0.15em;
+  margin-top: -0.12em;
 }
 
+/* Straighten the bottom two lines */
 .headline {
   margin: 8px 0 0;
-  font-size: clamp(10px, 1.8vw, 28px);
+  font-size: clamp(12px, 2.1vw, 32px);
   font-weight: bold;
   white-space: nowrap;
+
+  transform: none;
+  letter-spacing: 0.02em;
 }
 
 .subline {
-  margin: 4px 0 0;
-  font-size: clamp(6px, 1.1vw, 18px);
+  margin: 5px 0 0;
+  font-size: clamp(7px, 1.3vw, 20px);
   white-space: nowrap;
+
+  transform: none;
+  letter-spacing: 0;
 }
 
 @media (max-aspect-ratio: 4/3) {
@@ -130,8 +140,8 @@ html, body {
 </main>
 
 <script>
-/* Target: 17 February 2027, 12:00 PM local time.
-   This is a provisional date, not an official exam date. */
+/* Target: 17 February 2027 at 12:00 PM local time.
+   This is a provisional date, not a confirmed official exam date. */
 const targetDate = new Date(2027, 1, 17, 12, 0, 0);
 
 function updateCountdown() {
