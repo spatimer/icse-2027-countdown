@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080808">
-<title>ICSE 2027 Golden Countdown</title>
+<title>ICSE 2027 Countdown</title>
 
 <style>
 * {
@@ -24,9 +24,8 @@ html, body {
 .stage {
   position: fixed;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   background: #080808;
 }
 
@@ -37,7 +36,6 @@ html, body {
   overflow: hidden;
 }
 
-/* IMPORTANT: the filename must match the file in GitHub */
 .background {
   position: absolute;
   inset: 0;
@@ -47,7 +45,7 @@ html, body {
   display: block;
 }
 
-svg {
+.overlay {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -56,7 +54,7 @@ svg {
 }
 
 .heading {
-  fill: #efbd4c;
+  fill: #f5c65b;
   font-size: 25px;
   font-weight: 700;
   letter-spacing: 6px;
@@ -64,31 +62,24 @@ svg {
 }
 
 .timer {
-  fill: #ffe5a0;
+  fill: #ffe7ac;
   font-size: 76px;
   font-weight: 800;
-  letter-spacing: 0;
-  text-anchor: middle;
   font-variant-numeric: tabular-nums;
-  filter: url(#glow);
-}
-
-.colon {
-  fill: #d9a52e;
-  font-size: 52px;
-  font-weight: 500;
+  text-anchor: middle;
+  filter: url(#goldGlow);
 }
 
 .labels {
-  fill: #f0c75e;
-  font-size: 18px;
+  fill: #f3c65c;
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-anchor: middle;
 }
 
 .exam {
-  fill: #ffe8ad;
+  fill: #ffe8b0;
   font-size: 37px;
   font-weight: 800;
   letter-spacing: 3px;
@@ -96,40 +87,19 @@ svg {
 }
 
 .quote {
-  fill: #eac05a;
+  fill: #f3c65c;
   font-size: 21px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-anchor: middle;
 }
 
 @media (max-width: 600px) {
-  .heading {
-    font-size: 25px;
-    letter-spacing: 4px;
-  }
-
-  .timer {
-    font-size: 76px;
-  }
-
-  .colon {
-    font-size: 52px;
-  }
-
-  .labels {
-    font-size: 18px;
-    letter-spacing: 2px;
-  }
-
-  .exam {
-    font-size: 36px;
-  }
-
-  .quote {
-    font-size: 20px;
-    letter-spacing: 1px;
-  }
+  .heading { font-size: 25px; }
+  .timer { font-size: 76px; }
+  .labels { font-size: 19px; }
+  .exam { font-size: 36px; }
+  .quote { font-size: 20px; }
 }
 </style>
 </head>
@@ -138,21 +108,21 @@ svg {
 <div class="stage">
   <div class="scene">
 
-    <!-- Keep background.jpg in the same repository folder -->
-    <img
-      class="background"
-      src="./background.jpg"
-      alt="Black and gold abstract background"
-    >
+    <!-- Keep background.jpg in the same folder as index.html -->
+    <img class="background"
+         src="./background.jpg"
+         alt="Black and gold background">
 
-    <svg viewBox="0 0 1600 900"
+    <svg class="overlay"
+         viewBox="0 0 1600 900"
          preserveAspectRatio="none"
          aria-label="ICSE 2027 countdown">
 
       <defs>
-        <filter id="glow" x="-20%" y="-40%"
-                width="140%" height="180%">
-          <feGaussianBlur stdDeviation="2.5"
+        <filter id="goldGlow"
+                x="-20%" y="-30%"
+                width="140%" height="160%">
+          <feGaussianBlur stdDeviation="2"
                           result="blur"/>
           <feMerge>
             <feMergeNode in="blur"/>
@@ -160,22 +130,22 @@ svg {
           </feMerge>
         </filter>
 
-        <!-- The countdown follows this gentle wave -->
+        <!-- Main curved line -->
         <path id="headingPath"
-          d="M 400 330 Q 800 285 1200 330"/>
+              d="M 400 330 Q 800 285 1200 330"/>
 
         <path id="timerPath"
-          d="M 300 445 Q 800 365 1300 445"/>
+              d="M 300 445 Q 800 365 1300 445"/>
 
-        <!-- Labels follow a similar curve beneath the numbers -->
-        <path id="labelPath"
-          d="M 300 495 Q 800 415 1300 495"/>
+        <!-- Labels use the SAME curve, shifted down -->
+        <path id="labelsPath"
+              d="M 300 482 Q 800 402 1300 482"/>
 
         <path id="examPath"
-          d="M 500 565 Q 800 545 1100 565"/>
+              d="M 500 565 Q 800 545 1100 565"/>
 
         <path id="quotePath"
-          d="M 420 630 Q 800 660 1180 630"/>
+              d="M 420 630 Q 800 660 1180 630"/>
       </defs>
 
       <text class="heading">
@@ -185,20 +155,41 @@ svg {
         </textPath>
       </text>
 
-      <!-- Main curved countdown -->
       <text class="timer">
         <textPath id="timerText"
                   href="#timerPath"
                   startOffset="50%">
-          000  :  00  :  00  :  00
+          000 : 00 : 00 : 00
         </textPath>
       </text>
 
-      <!-- Labels beneath the corresponding number groups -->
+      <!-- Four separate labels, individually aligned
+           beneath the corresponding curved number groups -->
       <text class="labels">
-        <textPath href="#labelPath"
-                  startOffset="50%">
-          DAYS       HRS       MIN       SEC
+        <textPath href="#labelsPath"
+                  startOffset="36%">
+          DAYS
+        </textPath>
+      </text>
+
+      <text class="labels">
+        <textPath href="#labelsPath"
+                  startOffset="46%">
+          HRS
+        </textPath>
+      </text>
+
+      <text class="labels">
+        <textPath href="#labelsPath"
+                  startOffset="55%">
+          MIN
+        </textPath>
+      </text>
+
+      <text class="labels">
+        <textPath href="#labelsPath"
+                  startOffset="64%">
+          SEC
         </textPath>
       </text>
 
@@ -221,8 +212,8 @@ svg {
 </div>
 
 <script>
-/* 17 February 2027, 12:00 PM local time.
-   Change this if your official exam date differs. */
+/* Target: 17 February 2027 at 12:00 PM local time.
+   Update this if the official exam date is different. */
 const examDate = new Date(2027, 1, 17, 12, 0, 0);
 
 const timerText = document.getElementById("timerText");
@@ -240,16 +231,16 @@ function updateCountdown() {
   const minutes = Math.floor((total % 3600) / 60);
   const seconds = total % 60;
 
-  const d = String(days).padStart(3, "0");
-  const h = String(hours).padStart(2, "0");
-  const m = String(minutes).padStart(2, "0");
-  const s = String(seconds).padStart(2, "0");
-
-  timerText.textContent = `${d}  :  ${h}  :  ${m}  :  ${s}`;
+  timerText.textContent =
+    String(days).padStart(3, "0") + " : " +
+    String(hours).padStart(2, "0") + " : " +
+    String(minutes).padStart(2, "0") + " : " +
+    String(seconds).padStart(2, "0");
 }
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
 </script>
+
 </body>
 </html>
