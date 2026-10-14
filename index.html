@@ -9,7 +9,6 @@
 
 <style>
 :root {
-  /* Counter position and size */
   --screen-left: 35%;
   --screen-top: 36%;
   --screen-width: 46%;
@@ -54,7 +53,6 @@ html, body {
   color: #ffd18a;
   text-shadow: 0 0 5px rgba(255, 176, 70, 0.7);
 
-  /* Gentle tilt to follow the display */
   transform: rotate(-3deg) skewX(-1deg);
   transform-origin: center;
 }
@@ -70,17 +68,11 @@ html, body {
 .timer {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  gap: clamp(3px, 0.7vw, 12px);
+  align-items: center;
+  gap: clamp(2px, 0.5vw, 8px);
   width: 100%;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-}
-
-.unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .value {
@@ -89,10 +81,11 @@ html, body {
   line-height: 1.05;
 }
 
-.label {
-  margin-top: 4px;
-  font-size: clamp(5px, 0.72vw, 12px);
-  letter-spacing: 0.08em;
+.separator {
+  font-size: clamp(12px, 2.4vw, 38px);
+  font-weight: 500;
+  line-height: 1;
+  margin-top: -0.15em;
 }
 
 .headline {
@@ -123,25 +116,13 @@ html, body {
   <p class="eyebrow">EXAM COUNTDOWN</p>
 
   <div class="timer">
-    <div class="unit">
-      <span class="value" id="days">000</span>
-      <span class="label">DAYS</span>
-    </div>
-
-    <div class="unit">
-      <span class="value" id="hours">00</span>
-      <span class="label">HRS</span>
-    </div>
-
-    <div class="unit">
-      <span class="value" id="minutes">00</span>
-      <span class="label">MIN</span>
-    </div>
-
-    <div class="unit">
-      <span class="value" id="seconds">00</span>
-      <span class="label">SEC</span>
-    </div>
+    <span class="value" id="days">000</span>
+    <span class="separator">:</span>
+    <span class="value" id="hours">00</span>
+    <span class="separator">:</span>
+    <span class="value" id="minutes">00</span>
+    <span class="separator">:</span>
+    <span class="value" id="seconds">00</span>
   </div>
 
   <p class="headline">ICSE 2027</p>
@@ -149,17 +130,18 @@ html, body {
 </main>
 
 <script>
-/* Provisional target: 17 February 2027, 11:00 AM
-   This is not a confirmation of the official exam date. */
-const targetDate = new Date(2027, 1, 17, 11, 0, 0);
+/* Target: 17 February 2027, 12:00 PM local time.
+   This is a provisional date, not an official exam date. */
+const targetDate = new Date(2027, 1, 17, 12, 0, 0);
 
 function updateCountdown() {
-  let remaining = Math.max(
+  const remaining = Math.max(
     0,
     targetDate.getTime() - Date.now()
   );
 
   const totalSeconds = Math.floor(remaining / 1000);
+
   const days = Math.floor(totalSeconds / 86400);
   const hours = Math.floor((totalSeconds % 86400) / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
