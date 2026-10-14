@@ -1,316 +1,285 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ICSE 2027 Countdown</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050707">
+  <title>ICSE 2027 Countdown</title>
 
-<style>
-* { box-sizing: border-box; }
+  <style>
+    :root {
+      /* Adjust these values to fit your background screen */
+      --screen-left: 37.3%;
+      --screen-top: 32.8%;
+      --screen-width: 44.5%;
+      --screen-height: 28.5%;
 
-:root {
-  --gold: #ffc66b;
-  --amber: #ff9e32;
-}
+      --amber: #ffc66b;
+      --amber-bright: #ffe0a0;
+    }
 
-body {
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: #101113;
-  color: var(--gold);
-  font-family: "Courier New", monospace;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.room {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 42%,
-      #35332d 0%, #222321 34%, #141517 72%, #090a0b 100%);
-}
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #050707;
+      color: var(--amber);
+      font-family: "Arial Narrow", "Bahnschrift", Arial, sans-serif;
+    }
 
-/* Industrial wall panels */
-.wall {
-  position: absolute;
-  inset: 0;
-  opacity: .75;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 175px,
-      #080909 177px,
-      #45433c 179px,
-      transparent 182px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 135px,
-      #080909 137px,
-      #35342f 139px,
-      transparent 142px
-    );
-}
+    body {
+      position: relative;
+      isolation: isolate;
+    }
 
-/* Ceiling pipes */
-.pipe {
-  position: absolute;
-  top: 7%;
-  width: 110%;
-  left: -5%;
-  height: 16px;
-  background: linear-gradient(
-    to bottom, #55544d, #171819 40%, #050606 75%, #3d3b35
-  );
-  border: 1px solid #080909;
-  box-shadow: 0 8px 18px #000b;
-}
+    /* Place background.jpg in the same folder as index.html */
+    .scene {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background: #050707 url("./background.jpg")
+        center center / cover no-repeat;
+    }
 
-.pipe.two {
-  top: 13%;
-  height: 9px;
-  opacity: .7;
-}
+    /* Cinematic shadows */
+    .vignette {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          ellipse at 55% 48%,
+          transparent 42%,
+          rgba(0, 0, 0, 0.28) 100%
+        );
+    }
 
-.side-pipe {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 5%;
-  width: 13px;
-  background: linear-gradient(90deg,#080909,#4b4941,#151617);
-  box-shadow: 8px 0 20px #0008;
-}
+    /* Transparent overlay positioned over the physical screen */
+    .display-content {
+      position: absolute;
+      left: var(--screen-left);
+      top: var(--screen-top);
+      width: var(--screen-width);
+      height: var(--screen-height);
 
-.side-pipe.right {
-  left: auto;
-  right: 5%;
-}
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-/* Wall-mounted terminal */
-.terminal {
-  position: relative;
-  z-index: 2;
-  width: min(82vw, 1050px);
-  padding: 12px;
-  background: linear-gradient(135deg,#55534b,#111213 25%,#292a28 75%,#070808);
-  border: 2px solid #5b584d;
-  border-radius: 9px;
-  box-shadow:
-    0 0 0 5px #101112,
-    0 0 0 7px #38372f,
-    0 25px 65px #000e,
-    0 0 55px #ffad3620;
-}
+      text-align: center;
+      overflow: hidden;
+      padding: 1.5% 2%;
 
-.screws {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%,#aaa79b,#262622 60%,#080909);
-  border: 1px solid #080909;
-}
+      color: var(--amber);
 
-.tl { top: 8px; left: 8px; }
-.tr { top: 8px; right: 8px; }
-.bl { bottom: 8px; left: 8px; }
-.br { bottom: 8px; right: 8px; }
+      text-shadow:
+        0 0 2px rgba(255, 202, 116, 0.95),
+        0 0 8px rgba(255, 169, 61, 0.42),
+        0 0 18px rgba(255, 153, 36, 0.15);
 
-.screen {
-  min-height: 340px;
-  padding: clamp(24px, 5vw, 65px) 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background:
-    linear-gradient(145deg,#080909,#11110e 50%,#080909);
-  border: 1px solid #171714;
-  box-shadow: inset 0 0 45px #000;
-}
+      transform: perspective(900px) rotateY(-1deg);
+      transform-origin: center;
+    }
 
-.status {
-  font-size: clamp(10px,1.4vw,15px);
-  letter-spacing: .42em;
-  color: #bd873e;
-  margin-bottom: 14px;
-}
+    .eyebrow {
+      margin: 0 0 clamp(3px, 0.65vw, 12px);
+      color: rgba(255, 205, 130, 0.82);
+      font-size: clamp(7px, 1.05vw, 17px);
+      line-height: 1;
+      letter-spacing: 0.28em;
+      font-weight: 600;
+    }
 
-.heading {
-  color: #e9bd72;
-  font-size: clamp(19px,3vw,34px);
-  letter-spacing: .16em;
-  margin-bottom: 35px;
-  text-shadow: 0 0 15px #ffb94a45;
-}
+    .timer {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: clamp(3px, 0.75vw, 14px);
+      width: 100%;
+      white-space: nowrap;
 
-.timer {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: clamp(7px,2.2vw,26px);
-  width: 100%;
-}
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
 
-.unit {
-  min-width: 0;
-  flex: 1;
-}
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+    }
 
-.number {
-  font-size: clamp(28px,7.3vw,88px);
-  font-weight: bold;
-  line-height: 1;
-  letter-spacing: -.06em;
-  color: #ffc66b;
-  text-shadow:
-    0 0 7px #ffb33c,
-    0 0 24px #ff9c22a0,
-    0 0 50px #ff9c2240;
-  font-variant-numeric: tabular-nums;
-}
+    .value {
+      font-size: clamp(15px, 3.25vw, 56px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: 0.025em;
+      color: var(--amber-bright);
+    }
 
-.label {
-  font-size: clamp(9px,1.2vw,13px);
-  color: #aa8855;
-  letter-spacing: .15em;
-  margin-top: 17px;
-}
+    .label {
+      margin-top: clamp(2px, 0.45vw, 8px);
+      font-size: clamp(5px, 0.72vw, 12px);
+      line-height: 1;
+      letter-spacing: 0.12em;
+      color: rgba(255, 208, 139, 0.8);
+    }
 
-.separator {
-  font-size: clamp(25px,5vw,56px);
-  color: #a87431;
-  padding-top: 0;
-  animation: pulse 2s infinite;
-}
+    .headline {
+      margin: clamp(6px, 1.1vw, 18px) 0 0;
+      font-size: clamp(10px, 1.85vw, 31px);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: 0.055em;
+      color: #ffd28a;
+    }
 
-.footer {
-  margin-top: 43px;
-  color: #967342;
-  font-size: clamp(9px,1.2vw,13px);
-  letter-spacing: .18em;
-}
+    .subline {
+      margin: clamp(2px, 0.35vw, 6px) 0 0;
+      font-size: clamp(7px, 1.2vw, 20px);
+      line-height: 1.1;
+      letter-spacing: 0.07em;
+      color: rgba(255, 211, 149, 0.92);
+    }
 
-.indicator {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 9px;
-  border-radius: 50%;
-  background: #ffc66b;
-  box-shadow: 0 0 12px #ffb43e;
-  animation: pulse 1.6s infinite;
-}
+    .complete .timer {
+      display: none;
+    }
 
-.floor {
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -20%;
-  height: 30%;
-  transform: perspective(300px) rotateX(25deg);
-  background:
-    repeating-linear-gradient(90deg,#242522 0 2px,transparent 2px 150px),
-    repeating-linear-gradient(0deg,#242522 0 2px,transparent 2px 80px);
-  opacity: .25;
-}
+    .complete .headline {
+      margin-top: 0;
+    }
 
-@keyframes pulse {
-  50% { opacity: .45; }
-}
+    @media (max-aspect-ratio: 4/3) {
+      .scene {
+        background-size: contain;
+      }
 
-@media(max-width:500px) {
-  .terminal { width: 92vw; padding: 8px; }
-  .screen { min-height: 270px; padding: 30px 5px; }
-  .heading { margin-bottom: 28px; }
-  .footer { margin-top: 30px; }
-}
-</style>
+      .vignette {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<div class="room">
-  <div class="wall"></div>
-  <div class="pipe"></div>
-  <div class="pipe two"></div>
-  <div class="side-pipe"></div>
-  <div class="side-pipe right"></div>
-  <div class="floor"></div>
+  <div class="scene" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
-  <main class="terminal">
-    <span class="screws tl"></span>
-    <span class="screws tr"></span>
-    <span class="screws bl"></span>
-    <span class="screws br"></span>
+  <main
+    class="display-content"
+    id="display"
+    aria-label="ICSE 2027 live countdown"
+  >
+    <p class="eyebrow">EXAM COUNTDOWN</p>
 
-    <section class="screen">
-      <div class="status">ACADEMIC COUNTDOWN SYSTEM</div>
-      <div class="heading">ICSE 2027</div>
-
-      <div class="timer">
-        <div class="unit">
-          <div class="number" id="days">000</div>
-          <div class="label">DAYS</div>
-        </div>
-        <div class="separator">:</div>
-        <div class="unit">
-          <div class="number" id="hours">00</div>
-          <div class="label">HOURS</div>
-        </div>
-        <div class="separator">:</div>
-        <div class="unit">
-          <div class="number" id="minutes">00</div>
-          <div class="label">MINUTES</div>
-        </div>
-        <div class="separator">:</div>
-        <div class="unit">
-          <div class="number" id="seconds">00</div>
-          <div class="label">SECONDS</div>
-        </div>
+    <div class="timer" aria-live="off">
+      <div class="unit">
+        <span class="value" id="days">000</span>
+        <span class="label">DAYS</span>
       </div>
 
-      <div class="footer">
-        <span class="indicator"></span>
-        COUNTDOWN ACTIVE · CLASS X
+      <div class="unit">
+        <span class="value" id="hours">00</span>
+        <span class="label">HRS</span>
       </div>
-    </section>
+
+      <div class="unit">
+        <span class="value" id="minutes">00</span>
+        <span class="label">MIN</span>
+      </div>
+
+      <div class="unit">
+        <span class="value" id="seconds">00</span>
+        <span class="label">SEC</span>
+      </div>
+    </div>
+
+    <p class="headline">ICSE 2027</p>
+    <p class="subline" id="status">COUNTING DOWN TO EXAM DAY</p>
   </main>
-</div>
 
-<script>
-// Provisional target: February 17, 2027 at 11:00 AM local time.
-const EXAM_DATE = new Date(2027, 1, 17, 11, 0, 0);
+  <script>
+    /*
+      CONFIGURATION
 
-function updateCountdown() {
-  let remaining = EXAM_DATE.getTime() - Date.now();
+      This is a provisional example date, NOT an official
+      ICSE examination date.
 
-  if (remaining < 0) remaining = 0;
+      Format:
+      new Date(year, month, day, hours, minutes, seconds)
 
-  const days = Math.floor(remaining / 86400000);
-  const hours = Math.floor((remaining % 86400000) / 3600000);
-  const minutes = Math.floor((remaining % 3600000) / 60000);
-  const seconds = Math.floor((remaining % 60000) / 1000);
+      JavaScript months start at zero:
+      0 = January, 1 = February, 2 = March, etc.
 
-  document.getElementById("days").textContent =
-    String(days).padStart(3, "0");
-  document.getElementById("hours").textContent =
-    String(hours).padStart(2, "0");
-  document.getElementById("minutes").textContent =
-    String(minutes).padStart(2, "0");
-  document.getElementById("seconds").textContent =
-    String(seconds).padStart(2, "0");
-}
+      The countdown uses your computer's local time.
+    */
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
-</script>
+    const TARGET_DATE = new Date(2027, 1, 17, 11, 0, 0);
+
+    const elements = {
+      days: document.getElementById("days"),
+      hours: document.getElementById("hours"),
+      minutes: document.getElementById("minutes"),
+      seconds: document.getElementById("seconds"),
+      status: document.getElementById("status"),
+      display: document.getElementById("display")
+    };
+
+    function pad2(number) {
+      return String(number).padStart(2, "0");
+    }
+
+    function updateCountdown() {
+      const remainingMs = TARGET_DATE.getTime() - Date.now();
+
+      if (remainingMs <= 0) {
+        elements.days.textContent = "000";
+        elements.hours.textContent = "00";
+        elements.minutes.textContent = "00";
+        elements.seconds.textContent = "00";
+
+        elements.status.textContent = "EXAM DAY";
+        elements.display.classList.add("complete");
+
+        return;
+      }
+
+      elements.display.classList.remove("complete");
+
+      const totalSeconds = Math.floor(remainingMs / 1000);
+
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      elements.days.textContent = String(days).padStart(3, "0");
+      elements.hours.textContent = pad2(hours);
+      elements.minutes.textContent = pad2(minutes);
+      elements.seconds.textContent = pad2(seconds);
+    }
+
+    // Display immediately, then refresh regularly.
+    updateCountdown();
+
+    // Refresh four times per second to keep the display synchronized.
+    setInterval(updateCountdown, 250);
+  </script>
 </body>
 </html>
