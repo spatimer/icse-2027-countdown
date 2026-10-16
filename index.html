@@ -2,488 +2,593 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>X-B Exam Countdown</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICSE 2027 | Final Countdown</title>
 
-<style>
-:root {
-    --gold: #e7b76b;
-    --gold-light: #ffdda0;
-    --white: #fffaf2;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-* {
-    box-sizing: border-box;
-}
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #080909;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #f6c56d;
+        }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-}
+        body {
+            position: relative;
+            background-image: url("background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
 
-body {
-    background: #071225 url("background.jpg") center center / cover no-repeat;
-    color: var(--white);
-    font-family: Georgia, "Times New Roman", serif;
-}
+        /* Dark cinematic overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0, 0, 0, 0.42),
+                    rgba(0, 0, 0, 0.12),
+                    rgba(0, 0, 0, 0.42)
+                ),
+                linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.58),
+                    transparent 35%,
+                    rgba(0, 0, 0, 0.22)
+                );
+            z-index: 0;
+            pointer-events: none;
+        }
 
-/* Countdown positioning */
-.countdown-panel {
-    position: absolute;
-    left: 60%;
-    top: 44%;
-    transform: translate(-50%, -50%);
-    width: min(1350px, 72vw);
-    text-align: center;
-    z-index: 2;
-}
+        /* Main countdown area */
+        .main {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
 
-/* Heading and decorative lines */
-.heading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 32px;
-}
+        .heading {
+            position: absolute;
+            top: 9%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #f8d18a;
+            font-size: clamp(18px, 2vw, 30px);
+            font-weight: 500;
+            letter-spacing: 0.38em;
+            text-shadow: 0 0 18px rgba(246, 176, 68, 0.35);
+        }
 
-.heading::before,
-.heading::after {
-    content: "";
-    flex: 1;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold));
-    opacity: 0.9;
-}
+        .subtitle {
+            position: absolute;
+            top: calc(9% + 48px);
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 224, 172, 0.72);
+            font-size: clamp(9px, 0.9vw, 13px);
+            letter-spacing: 0.34em;
+        }
 
-.heading::after {
-    background: linear-gradient(90deg, var(--gold), transparent);
-}
+        /* Countdown row */
+        .countdown {
+            position: absolute;
+            left: 60%;
+            top: 44%;
+            transform: translate(-50%, -50%);
+            width: min(1350px, 72vw);
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            align-items: center;
+            text-align: center;
+        }
 
-.heading span {
-    color: var(--gold-light);
-    font-size: clamp(15px, 1.6vw, 26px);
-    font-weight: bold;
-    letter-spacing: 4px;
-    white-space: nowrap;
-    text-shadow: 0 0 12px #dca75a55;
-}
+        .unit {
+            min-width: 0;
+            position: relative;
+            padding: 12px 4px;
+        }
 
-/* Countdown units kept closer together */
-.timer {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: clamp(2px, 0.45vw, 8px);
-    width: 100%;
-}
+        .number {
+            color: #ffd17a;
+            font-size: clamp(38px, 6.5vw, 100px);
+            line-height: 1;
+            font-weight: 300;
+            font-variant-numeric: tabular-nums;
+            text-shadow:
+                0 0 8px rgba(255, 184, 71, 0.58),
+                0 0 28px rgba(255, 161, 42, 0.22);
+        }
 
-.unit {
-    flex: 1 1 0;
-    min-width: 0;
-    text-align: center;
-}
+        .label {
+            margin-top: 17px;
+            color: rgba(255, 224, 174, 0.75);
+            font-size: clamp(9px, 0.85vw, 13px);
+            letter-spacing: 0.28em;
+        }
 
-.number {
-    color: #fffdf9;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: clamp(34px, 4.2vw, 68px);
-    font-weight: 700;
-    line-height: 1.05;
-    font-variant-numeric: tabular-nums;
-    text-shadow: 0 2px 14px #0008;
-}
+        .footer {
+            position: absolute;
+            bottom: 7%;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 222, 165, 0.68);
+            font-size: clamp(10px, 1vw, 14px);
+            letter-spacing: 0.22em;
+        }
 
-.label {
-    margin-top: 7px;
-    color: var(--gold-light);
-    font-size: clamp(12px, 1.25vw, 20px);
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 8px #0009;
-}
+        /* Golden glow that follows mouse or touch */
+        .glow {
+            position: fixed;
+            z-index: 5;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(
+                circle,
+                rgba(255, 190, 90, 0.18) 0%,
+                rgba(255, 164, 45, 0.08) 32%,
+                transparent 72%
+            );
+            mix-blend-mode: screen;
+        }
 
-/* Gold colon separators */
-.separator {
-    flex: 0 0 auto;
-    padding-top: 1px;
-    color: var(--gold);
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: clamp(30px, 3.5vw, 55px);
-    font-weight: 300;
-    line-height: 1;
-    opacity: 0.9;
-    text-shadow: 0 0 12px #e7b76b44;
-}
+        /* Popup image: covers days, hours and minutes, leaving seconds visible */
+        #popup-image {
+            position: fixed;
+            z-index: 20;
+            left: 60%;
+            top: 44%;
+            width: min(420px, 48vw);
+            height: 210px;
+            max-height: 40vh;
+            object-fit: contain;
+            object-position: center;
+            transform: translate(-50%, -50%) scale(0.94);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            filter: drop-shadow(
+                0 0 22px rgba(255, 183, 75, 0.28)
+            );
+        }
 
-/* Class heading */
-.class-heading {
-    margin-top: 38px;
-    color: var(--gold-light);
-    font-size: clamp(32px, 3.5vw, 54px);
-    font-weight: bold;
-    letter-spacing: 3px;
-    text-shadow: 0 2px 15px #0009;
-}
+        #popup-image.visible {
+            visibility: visible;
+            animation: popup-appear 3s ease both;
+        }
 
-/* Motivational line */
-.motivation {
-    margin-top: 14px;
-    color: #fff0d6;
-    font-size: clamp(14px, 1.5vw, 24px);
-    font-style: italic;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 10px #000b;
-}
+        @keyframes popup-appear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.94);
+            }
 
-/* Subtle, translucent sound button */
-.sound-button {
-    position: fixed;
-    top: 25px;
-    right: 28px;
-    z-index: 30;
-    width: 48px;
-    height: 48px;
-    border: 1px solid #ffffff20;
-    border-radius: 50%;
-    background: #ffffff08;
-    color: #f7d49b;
-    font-size: 21px;
-    cursor: pointer;
-    opacity: 0.55;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    transition: opacity 0.25s, background 0.25s;
-}
+            12% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
 
-.sound-button:hover,
-.sound-button:focus-visible {
-    opacity: 0.9;
-    background: #ffffff16;
-}
+            82% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
 
-/* Smooth golden glow — no rings or circles */
-.touch-glow {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 1px;
-    height: 1px;
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.98);
+            }
+        }
 
-    background: radial-gradient(
-        circle,
-        rgba(255, 222, 157, 0.72) 0%,
-        rgba(255, 190, 91, 0.42) 13%,
-        rgba(239, 166, 66, 0.19) 32%,
-        rgba(220, 155, 68, 0.07) 55%,
-        rgba(220, 155, 68, 0) 75%
-    );
+        /* Sound control */
+        .sound-toggle {
+            position: fixed;
+            z-index: 30;
+            right: 20px;
+            bottom: 18px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255, 196, 100, 0.35);
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.42);
+            color: #f8d18a;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+        }
 
-    transform: translate(-50%, -50%);
-    transition: opacity 0.35s ease;
-    mix-blend-mode: screen;
-}
+        .sound-toggle:hover {
+            background: rgba(255, 190, 90, 0.12);
+        }
 
-.touch-glow.active {
-    opacity: 1;
-}
+        /* Smaller screens */
+        @media (max-width: 700px) {
+            .heading {
+                top: 12%;
+                letter-spacing: 0.22em;
+            }
 
-/* Smaller-screen adjustments */
-@media (max-width: 700px) {
-    .countdown-panel {
-        left: 50%;
-        top: 45%;
-        width: 94vw;
-    }
+            .subtitle {
+                top: calc(12% + 36px);
+                letter-spacing: 0.18em;
+            }
 
-    .heading {
-        gap: 10px;
-        margin-bottom: 24px;
-    }
+            .countdown {
+                left: 50%;
+                top: 48%;
+                width: 96vw;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
 
-    .heading span {
-        font-size: clamp(12px, 3.2vw, 18px);
-        letter-spacing: 2px;
-    }
+            .unit {
+                padding: 8px 1px;
+            }
 
-    .timer {
-        gap: 2px;
-    }
+            .number {
+                font-size: clamp(25px, 8vw, 48px);
+            }
 
-    .number {
-        font-size: clamp(25px, 7vw, 44px);
-    }
+            .label {
+                margin-top: 12px;
+                font-size: clamp(7px, 1.8vw, 10px);
+                letter-spacing: 0.08em;
+            }
 
-    .label {
-        font-size: clamp(9px, 2.3vw, 14px);
-        letter-spacing: 0.4px;
-        margin-top: 7px;
-    }
+            #popup-image {
+                left: 38%;
+                top: 48%;
+                width: 72vw;
+                height: 150px;
+                max-height: 32vh;
+            }
 
-    .separator {
-        font-size: clamp(22px, 5.5vw, 35px);
-    }
+            .footer {
+                bottom: 9%;
+                padding: 0 12px;
+                font-size: 9px;
+                letter-spacing: 0.12em;
+            }
 
-    .class-heading {
-        margin-top: 30px;
-        font-size: clamp(28px, 7vw, 42px);
-    }
+            .sound-toggle {
+                right: 10px;
+                bottom: 10px;
+                font-size: 10px;
+            }
+        }
 
-    .motivation {
-        font-size: clamp(12px, 3vw, 17px);
-        margin-top: 12px;
-    }
-
-    .sound-button {
-        top: 12px;
-        right: 12px;
-        width: 40px;
-        height: 40px;
-    }
-}
-</style>
+        @media (prefers-reduced-motion: reduce) {
+            .glow {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<button
-    class="sound-button"
-    id="soundButton"
-    aria-label="Turn ticking sound on or off"
-    title="Toggle ticking sound"
->♩</button>
+    <div class="main">
+        <div class="heading">X-B</div>
+        <div class="subtitle">THE FINAL COUNTDOWN</div>
 
-<main class="countdown-panel">
+        <div class="countdown" id="countdown">
+            <div class="unit">
+                <div class="number" id="days">000</div>
+                <div class="label">DAYS</div>
+            </div>
 
-    <div class="heading">
-        <span>EXAM COUNTDOWN</span>
+            <div class="unit">
+                <div class="number" id="hours">00</div>
+                <div class="label">HOURS</div>
+            </div>
+
+            <div class="unit">
+                <div class="number" id="minutes">00</div>
+                <div class="label">MINUTES</div>
+            </div>
+
+            <div class="unit">
+                <div class="number" id="seconds">00</div>
+                <div class="label">SECONDS</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Every second counts. Every effort matters.
+        </div>
     </div>
 
-    <div class="timer" aria-label="Time remaining until the examination">
+    <!-- Popup image appears automatically -->
+    <img
+        id="popup-image"
+        src="popup.png"
+        alt=""
+        aria-hidden="true"
+    >
 
-        <div class="unit">
-            <div class="number" id="months">00</div>
-            <div class="label">MONTHS</div>
-        </div>
+    <!-- Optional ticking sound -->
+    <button class="sound-toggle" id="sound-toggle" type="button">
+        SOUND: OFF
+    </button>
 
-        <div class="separator">:</div>
+    <script>
+        /* =========================================
+           COUNTDOWN
+           ICSE countdown target: 17 February 2027,
+           12:00 noon, Indian Standard Time
+        ========================================= */
 
-        <div class="unit">
-            <div class="number" id="days">00</div>
-            <div class="label">DAYS</div>
-        </div>
+        const targetDate = new Date(
+            "2027-02-17T12:00:00+05:30"
+        ).getTime();
 
-        <div class="separator">:</div>
+        const daysElement = document.getElementById("days");
+        const hoursElement = document.getElementById("hours");
+        const minutesElement = document.getElementById("minutes");
+        const secondsElement = document.getElementById("seconds");
 
-        <div class="unit">
-            <div class="number" id="hours">00</div>
-            <div class="label">HRS</div>
-        </div>
+        function updateCountdown() {
+            const now = Date.now();
+            let remaining = Math.max(0, targetDate - now);
 
-        <div class="separator">:</div>
+            const days = Math.floor(
+                remaining / (1000 * 60 * 60 * 24)
+            );
+            remaining %= 1000 * 60 * 60 * 24;
 
-        <div class="unit">
-            <div class="number" id="minutes">00</div>
-            <div class="label">MIN</div>
-        </div>
+            const hours = Math.floor(
+                remaining / (1000 * 60 * 60)
+            );
+            remaining %= 1000 * 60 * 60;
 
-        <div class="separator">:</div>
+            const minutes = Math.floor(
+                remaining / (1000 * 60)
+            );
+            remaining %= 1000 * 60;
 
-        <div class="unit">
-            <div class="number" id="seconds">00</div>
-            <div class="label">SEC</div>
-        </div>
+            const seconds = Math.floor(remaining / 1000);
 
-    </div>
+            daysElement.textContent = String(days).padStart(3, "0");
+            hoursElement.textContent = String(hours).padStart(2, "0");
+            minutesElement.textContent = String(minutes).padStart(2, "0");
+            secondsElement.textContent = String(seconds).padStart(2, "0");
+        }
 
-    <div class="class-heading">X-B</div>
-
-    <div class="motivation">
-        Every second counts. Every effort matters.
-    </div>
-
-</main>
-
-<div class="touch-glow" id="touchGlow"></div>
-
-<script>
-/* Exam date: 17 February 2027 at 9:00 AM IST.
-   Change the time if your official exam schedule differs. */
-
-const examDate = new Date("2027-02-17T12:00:00+05:30");
-
-const $ = id => document.getElementById(id);
-
-const pad = value => String(value).padStart(2, "0");
-
-/* Calendar-based months, followed by days and clock time */
-function getCalendarCountdown(now, target) {
-    if (now >= target) {
-        return { months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
-    }
-
-    let months =
-        (target.getFullYear() - now.getFullYear()) * 12 +
-        target.getMonth() - now.getMonth();
-
-    function addMonthsClamped(date, count) {
-        const result = new Date(date.getTime());
-        const originalDay = result.getDate();
-
-        result.setDate(1);
-        result.setMonth(result.getMonth() + count);
-
-        const lastDay = new Date(
-            result.getFullYear(),
-            result.getMonth() + 1,
-            0
-        ).getDate();
-
-        result.setDate(Math.min(originalDay, lastDay));
-        return result;
-    }
-
-    let anchor = addMonthsClamped(now, months);
-
-    if (anchor > target) {
-        months--;
-        anchor = addMonthsClamped(now, months);
-    }
-
-    let remaining = Math.max(0, target.getTime() - anchor.getTime());
-
-    const days = Math.floor(remaining / 86400000);
-    remaining %= 86400000;
-
-    const hours = Math.floor(remaining / 3600000);
-    remaining %= 3600000;
-
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-
-    return { months, days, hours, minutes, seconds };
-}
-
-function updateCountdown() {
-    const result = getCalendarCountdown(new Date(), examDate);
-
-    $("months").textContent = pad(result.months);
-    $("days").textContent = pad(result.days);
-    $("hours").textContent = pad(result.hours);
-    $("minutes").textContent = pad(result.minutes);
-    $("seconds").textContent = pad(result.seconds);
-}
-
-updateCountdown();
-setInterval(updateCountdown, 1000);
+        updateCountdown();
+        setInterval(updateCountdown, 250);
 
 
-/* Golden glow appears only during a left-click or touch */
-const glow = $("touchGlow");
-let glowActive = false;
+        /* =========================================
+           GOLDEN POINTER GLOW
+           Supports mouse, pen and multiple touches
+        ========================================= */
 
-function showGlow(x, y) {
-    glow.style.left = x + "px";
-    glow.style.top = y + "px";
-    glow.style.width = "340px";
-    glow.style.height = "340px";
-    glow.classList.add("active");
-    glowActive = true;
-}
+        const activeGlows = new Map();
 
-function hideGlow() {
-    glow.classList.remove("active");
-    glowActive = false;
-}
+        function createGlow(pointerId, x, y) {
+            let glow = activeGlows.get(pointerId);
 
-document.addEventListener("pointerdown", event => {
-    if (event.pointerType === "mouse" && event.button !== 0) {
-        return;
-    }
+            if (!glow) {
+                glow = document.createElement("div");
+                glow.className = "glow";
+                document.body.appendChild(glow);
+                activeGlows.set(pointerId, glow);
+            }
 
-    showGlow(event.clientX, event.clientY);
-});
+            glow.style.left = x + "px";
+            glow.style.top = y + "px";
+        }
 
-document.addEventListener("pointermove", event => {
-    if (!glowActive) return;
+        function removeGlow(pointerId) {
+            const glow = activeGlows.get(pointerId);
 
-    if (event.pointerType === "mouse" && (event.buttons & 1)) {
-        showGlow(event.clientX, event.clientY);
-    } else if (event.pointerType === "touch") {
-        showGlow(event.clientX, event.clientY);
-    }
-});
+            if (glow) {
+                glow.remove();
+                activeGlows.delete(pointerId);
+            }
+        }
 
-document.addEventListener("pointerup", hideGlow);
-document.addEventListener("pointercancel", hideGlow);
-window.addEventListener("blur", hideGlow);
+        document.addEventListener("pointerdown", (event) => {
+            createGlow(event.pointerId, event.clientX, event.clientY);
+        });
+
+        document.addEventListener("pointermove", (event) => {
+            if (
+                activeGlows.has(event.pointerId) ||
+                event.pointerType === "mouse"
+            ) {
+                createGlow(
+                    event.pointerId,
+                    event.clientX,
+                    event.clientY
+                );
+            }
+        });
+
+        document.addEventListener("pointerup", (event) => {
+            removeGlow(event.pointerId);
+        });
+
+        document.addEventListener("pointercancel", (event) => {
+            removeGlow(event.pointerId);
+        });
+
+        document.addEventListener("pointerleave", (event) => {
+            if (event.pointerType === "mouse") {
+                removeGlow(event.pointerId);
+            }
+        });
 
 
-/* Optional soft ticking sound */
-let audioContext = null;
-let tickTimer = null;
-let soundOn = false;
+        /* =========================================
+           POPUP IMAGE
+           First appears after 24 hours, then repeats
+           every 24 hours while the page is active.
+           Each display lasts 3 seconds.
+        ========================================= */
 
-const soundButton = $("soundButton");
+        const popupImage = document.getElementById("popup-image");
 
-function playTick() {
-    if (!audioContext || !soundOn) return;
+        const POPUP_INTERVAL = 24 * 60 * 60 * 1000;
+        const POPUP_DURATION = 3000;
+        const LAST_POPUP_KEY = "icseCountdownLastPopup";
 
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const start = audioContext.currentTime;
+        let popupTimeout = null;
 
-    oscillator.type = "sine";
-    oscillator.frequency.value = 850;
+        function showPopup() {
+            popupImage.classList.remove("visible");
 
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(0.035, start + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.055);
+            /* Restart the animation cleanly */
+            void popupImage.offsetWidth;
 
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
+            popupImage.classList.add("visible");
 
-    oscillator.start(start);
-    oscillator.stop(start + 0.06);
-}
+            if (popupTimeout) {
+                clearTimeout(popupTimeout);
+            }
 
-soundButton.addEventListener("click", async () => {
-    if (!audioContext) {
-        const AudioContextClass =
-            window.AudioContext || window.webkitAudioContext;
+            popupTimeout = setTimeout(() => {
+                popupImage.classList.remove("visible");
+            }, POPUP_DURATION);
+        }
 
-        if (!AudioContextClass) return;
+        function checkPopupSchedule() {
+            const now = Date.now();
+            const lastPopup = Number(
+                localStorage.getItem(LAST_POPUP_KEY) || 0
+            );
 
-        audioContext = new AudioContextClass();
-    }
+            if (!lastPopup) {
+                /* Start the 24-hour interval on first visit */
+                localStorage.setItem(LAST_POPUP_KEY, String(now));
+                return;
+            }
 
-    if (audioContext.state === "suspended") {
-        await audioContext.resume();
-    }
+            if (now - lastPopup >= POPUP_INTERVAL) {
+                localStorage.setItem(LAST_POPUP_KEY, String(now));
+                showPopup();
+            }
+        }
 
-    soundOn = !soundOn;
+        /* Check once on page load */
+        checkPopupSchedule();
 
-    if (soundOn) {
-        soundButton.textContent = "♫";
-        soundButton.style.opacity = "0.85";
+        /* Check periodically while the page is open */
+        setInterval(checkPopupSchedule, 60 * 1000);
 
-        playTick();
-        tickTimer = setInterval(playTick, 1000);
-    } else {
-        soundButton.textContent = "♩";
-        soundButton.style.opacity = "0.55";
+        /* Check again when the browser or wallpaper becomes active */
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                checkPopupSchedule();
+            }
+        });
 
-        clearInterval(tickTimer);
-        tickTimer = null;
-    }
-});
-</script>
+        window.addEventListener("focus", checkPopupSchedule);
+
+
+        /* =========================================
+           OPTIONAL SYNTHESIZED TICKING SOUND
+        ========================================= */
+
+        const soundButton = document.getElementById("sound-toggle");
+
+        let soundEnabled = false;
+        let audioContext = null;
+        let lastSoundSecond = -1;
+
+        function playTick() {
+            if (!soundEnabled) return;
+
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
+
+            if (!AudioContextClass) return;
+
+            if (!audioContext) {
+                audioContext = new AudioContextClass();
+            }
+
+            if (audioContext.state === "suspended") {
+                audioContext.resume();
+            }
+
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+
+            oscillator.type = "sine";
+            oscillator.frequency.value = 900;
+
+            gain.gain.setValueAtTime(
+                0.0001,
+                audioContext.currentTime
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.035,
+                audioContext.currentTime + 0.005
+            );
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.0001,
+                audioContext.currentTime + 0.045
+            );
+
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.05);
+        }
+
+        soundButton.addEventListener("click", async () => {
+            soundEnabled = !soundEnabled;
+
+            if (soundEnabled) {
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
+
+                if (AudioContextClass && !audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                if (audioContext && audioContext.state === "suspended") {
+                    await audioContext.resume();
+                }
+
+                soundButton.textContent = "SOUND: ON";
+                playTick();
+            } else {
+                soundButton.textContent = "SOUND: OFF";
+            }
+        });
+
+        setInterval(() => {
+            const currentSecond = Math.floor(Date.now() / 1000);
+
+            if (currentSecond !== lastSoundSecond) {
+                lastSoundSecond = currentSecond;
+                playTick();
+            }
+        }, 100);
+    </script>
 
 </body>
 </html>
