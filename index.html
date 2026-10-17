@@ -40,7 +40,8 @@ body {
     touch-action: none;
 }
 
-/* Original countdown placement */
+/* COUNTDOWN */
+
 .countdown-area {
     position: absolute;
     left: 56%;
@@ -133,12 +134,13 @@ body {
     white-space: nowrap;
 }
 
-/* Original sound button */
+/* SOUND BUTTON */
+
 #soundButton {
     position: fixed;
     top: 22px;
     right: 24px;
-    z-index: 10000;
+    z-index: 50;
     display: grid;
     place-items: center;
     width: 48px;
@@ -152,7 +154,6 @@ body {
     -webkit-backdrop-filter: blur(5px);
     cursor: pointer;
     transition: background 180ms, border-color 180ms, transform 180ms;
-    touch-action: manipulation;
 }
 
 #soundButton:hover {
@@ -176,53 +177,44 @@ body {
     stroke-linejoin: round;
 }
 
-/* Independent golden glow for every active pointer */
+/* GOLDEN TOUCH GLOW */
+
 .touch-glow {
     position: fixed;
-    z-index: 9000;
-    width: 180px;
-    height: 180px;
+    z-index: 40;
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
     background: radial-gradient(
         circle,
-        rgba(255, 210, 75, .34) 0%,
-        rgba(255, 190, 45, .23) 18%,
-        rgba(255, 174, 25, .12) 42%,
-        rgba(255, 160, 20, .045) 62%,
-        transparent 75%
+        rgba(255, 211, 77, .30) 0%,
+        rgba(255, 190, 45, .18) 22%,
+        rgba(255, 175, 25, .09) 45%,
+        rgba(255, 175, 25, 0) 72%
     );
     filter: blur(5px);
     mix-blend-mode: screen;
-    will-change: left, top;
 }
 
-/* Subtle glowing centre */
-.touch-glow::after {
-    content: "";
-    position: absolute;
-    inset: 42%;
-    border-radius: 50%;
-    background: rgba(255, 220, 110, .55);
-    box-shadow:
-        0 0 12px 5px rgba(255, 202, 65, .38),
-        0 0 28px 12px rgba(255, 177, 35, .20);
-}
+/* DAILY POPUP */
 
-/* W image popup */
 #popup-image {
     position: fixed;
-    z-index: 9500;
-    left: 60%;
-    top: 44%;
-    width: min(420px, 48vw);
-    height: 210px;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    max-width: min(80vw, 900px);
+    max-height: 80vh;
     object-fit: contain;
-    transform: translate(-50%, -50%) scale(.96);
     opacity: 0;
-    pointer-events: none;
     visibility: hidden;
+    pointer-events: none;
+    transform: translate(-50%, -46%) scale(.96);
+    filter: drop-shadow(0 0 24px rgba(255, 196, 49, .22));
 }
 
 #popup-image.show {
@@ -233,7 +225,7 @@ body {
 @keyframes popupAppear {
     0% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(.96);
+        transform: translate(-50%, -46%) scale(.96);
     }
     12% {
         opacity: 1;
@@ -245,11 +237,13 @@ body {
     }
     100% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(.98);
+        transform: translate(-50%, -52%) scale(.98);
     }
 }
 
-@media(max-width: 900px) {
+/* SMALLER SCREENS */
+
+@media (max-width: 900px) {
     .countdown-area {
         left: 56%;
         width: 86vw;
@@ -291,20 +285,13 @@ body {
         height: 42px;
     }
 
-    .touch-glow {
-        width: 150px;
-        height: 150px;
-    }
-
     #popup-image {
-        left: 50%;
-        top: 45%;
-        width: 76vw;
-        height: 150px;
+        max-width: 88vw;
+        max-height: 75vh;
     }
 }
 
-@media(max-width: 480px) {
+@media (max-width: 480px) {
     .countdown-area {
         left: 56%;
         width: 91vw;
@@ -328,7 +315,7 @@ body {
     }
 }
 
-@media(prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
     #popup-image.show {
         animation-duration: 3s;
     }
@@ -337,6 +324,7 @@ body {
 </head>
 
 <body>
+
 <div id="wallpaper">
     <main class="countdown-area">
         <div class="eyebrow">EXAM COUNTDOWN</div>
@@ -369,13 +357,20 @@ body {
         </div>
 
         <div class="class-name">X-B</div>
-        <div class="subtitle" id="subtitle">COUNTING DOWN TO EXAM DAY</div>
+        <div class="subtitle" id="subtitle">
+            COUNTING DOWN TO EXAM DAY
+        </div>
     </main>
 </div>
 
-<button id="soundButton" type="button"
-        aria-label="Turn ticking sound on"
-        title="Turn ticking sound on">
+<!-- Sound button -->
+
+<button
+    id="soundButton"
+    type="button"
+    aria-label="Turn ticking sound on"
+    title="Turn ticking sound on"
+>
     <svg id="soundIcon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M11 5 6 9H3v6h3l5 4V5Z"/>
         <path d="M16 9a5 5 0 0 1 0 6"/>
@@ -383,15 +378,22 @@ body {
     </svg>
 </button>
 
-<img id="popup-image" src="popup.png" alt="" aria-hidden="true">
+<!-- Image that appears daily at noon -->
+
+<img
+    id="popup-image"
+    src="popup.png"
+    alt=""
+    aria-hidden="true"
+>
 
 <script>
 /* =========================================
-   COUNTDOWN
-   Target: 17 February 2027 at 9:00 AM IST
+   EXAM COUNTDOWN
+   Target: 17 February 2027, 12:00 p.m. IST
 ========================================= */
 
-const targetDate = new Date("2027-02-17T09:00:00+05:30");
+const targetDate = new Date("2027-02-17T12:00:00+05:30");
 
 const output = {
     months: document.getElementById("months"),
@@ -401,7 +403,7 @@ const output = {
     seconds: document.getElementById("seconds")
 };
 
-const pad = number => String(number).padStart(2, "0");
+const pad = n => String(n).padStart(2, "0");
 
 function addCalendarMonths(date, count) {
     const result = new Date(date);
@@ -417,6 +419,7 @@ function addCalendarMonths(date, count) {
     ).getDate();
 
     result.setDate(Math.min(day, lastDay));
+
     return result;
 }
 
@@ -424,8 +427,8 @@ function updateCountdown() {
     const now = new Date();
 
     if (now >= targetDate) {
-        Object.values(output).forEach(element => {
-            element.textContent = "00";
+        Object.values(output).forEach(el => {
+            el.textContent = "00";
         });
 
         document.getElementById("subtitle").textContent =
@@ -435,8 +438,8 @@ function updateCountdown() {
     }
 
     let months =
-        (targetDate.getFullYear() - now.getFullYear()) * 12 +
-        targetDate.getMonth() - now.getMonth();
+        (targetDate.getFullYear() - now.getFullYear()) * 12
+        + targetDate.getMonth() - now.getMonth();
 
     let anchor = addCalendarMonths(now, months);
 
@@ -492,8 +495,12 @@ function playTick() {
     const gain = audioContext.createGain();
 
     oscillator.type = "sine";
+
     oscillator.frequency.setValueAtTime(1500, now);
-    oscillator.frequency.exponentialRampToValueAtTime(900, now + 0.025);
+    oscillator.frequency.exponentialRampToValueAtTime(
+        900,
+        now + 0.025
+    );
 
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.045, now + 0.003);
@@ -508,7 +515,11 @@ function playTick() {
 
 function setSoundIcon() {
     if (soundEnabled) {
-        soundButton.setAttribute("aria-label", "Turn ticking sound off");
+        soundButton.setAttribute(
+            "aria-label",
+            "Turn ticking sound off"
+        );
+
         soundButton.title = "Turn ticking sound off";
 
         soundIcon.innerHTML =
@@ -516,7 +527,11 @@ function setSoundIcon() {
             '<path d="M16 9a5 5 0 0 1 0 6"/>' +
             '<path d="M19 6a9 9 0 0 1 0 12"/>';
     } else {
-        soundButton.setAttribute("aria-label", "Turn ticking sound on");
+        soundButton.setAttribute(
+            "aria-label",
+            "Turn ticking sound on"
+        );
+
         soundButton.title = "Turn ticking sound on";
 
         soundIcon.innerHTML =
@@ -529,8 +544,10 @@ function setSoundIcon() {
 soundButton.addEventListener("click", async () => {
     if (soundEnabled) {
         soundEnabled = false;
+
         clearInterval(tickTimer);
         tickTimer = null;
+
         setSoundIcon();
         return;
     }
@@ -552,8 +569,8 @@ soundButton.addEventListener("click", async () => {
 
         soundEnabled = true;
         setSoundIcon();
-        playTick();
 
+        playTick();
         tickTimer = setInterval(playTick, 1000);
     } catch (error) {
         soundEnabled = false;
@@ -563,16 +580,16 @@ soundButton.addEventListener("click", async () => {
 
 
 /* =========================================
-   MULTI-TOUCH GOLDEN GLOWS
-   Each active pointer gets its own glow.
+   PERSISTENT GOLDEN TOUCH GLOW
+   Supports multiple simultaneous fingers.
 ========================================= */
 
 const activeGlows = new Map();
 
-function createGlow(pointerId, x, y) {
+function createTouchGlow(pointerId, x, y) {
     const glow = document.createElement("div");
-    glow.className = "touch-glow";
 
+    glow.className = "touch-glow";
     glow.style.left = x + "px";
     glow.style.top = y + "px";
 
@@ -580,7 +597,7 @@ function createGlow(pointerId, x, y) {
     activeGlows.set(pointerId, glow);
 }
 
-function moveGlow(pointerId, x, y) {
+function moveTouchGlow(pointerId, x, y) {
     const glow = activeGlows.get(pointerId);
 
     if (!glow) return;
@@ -589,7 +606,7 @@ function moveGlow(pointerId, x, y) {
     glow.style.top = y + "px";
 }
 
-function removeGlow(pointerId) {
+function removeTouchGlow(pointerId) {
     const glow = activeGlows.get(pointerId);
 
     if (glow) {
@@ -598,97 +615,72 @@ function removeGlow(pointerId) {
     }
 }
 
-function removeAllGlows() {
-    for (const glow of activeGlows.values()) {
-        glow.remove();
-    }
-
-    activeGlows.clear();
-}
-
-/*
- * Touch and pen:
- * Each pointer gets an independent glow.
- *
- * Mouse:
- * Only the left mouse button activates a glow.
- * Moving the mouse while holding the button moves that glow.
- */
-
 document.addEventListener("pointerdown", event => {
-    // Leave the sound button usable.
     if (event.target.closest("#soundButton")) return;
 
-    // Ignore right-click and middle-click.
-    if (event.pointerType === "mouse" && event.button !== 0) {
-        return;
-    }
-
-    // Avoid duplicate IDs.
-    removeGlow(event.pointerId);
-
-    createGlow(
+    createTouchGlow(
         event.pointerId,
         event.clientX,
         event.clientY
     );
-
-    // Keep receiving this pointer's events as it moves.
-    if (event.target.setPointerCapture) {
-        try {
-            event.target.setPointerCapture(event.pointerId);
-        } catch (error) {
-            // Continue using document-level pointer events.
-        }
-    }
-
-    // Prevent touch gestures from interfering with the interaction.
-    if (event.pointerType !== "mouse") {
-        event.preventDefault();
-    }
 });
 
 document.addEventListener("pointermove", event => {
-    if (!activeGlows.has(event.pointerId)) return;
-
-    moveGlow(
+    moveTouchGlow(
         event.pointerId,
         event.clientX,
         event.clientY
     );
-
-    if (event.pointerType !== "mouse") {
-        event.preventDefault();
-    }
 });
 
 document.addEventListener("pointerup", event => {
-    removeGlow(event.pointerId);
+    removeTouchGlow(event.pointerId);
 });
 
 document.addEventListener("pointercancel", event => {
-    removeGlow(event.pointerId);
+    removeTouchGlow(event.pointerId);
 });
 
 document.addEventListener("lostpointercapture", event => {
-    removeGlow(event.pointerId);
+    removeTouchGlow(event.pointerId);
 });
 
-// Prevent glows being left behind if the browser window loses focus.
-window.addEventListener("blur", removeAllGlows);
+window.addEventListener("blur", () => {
+    for (const pointerId of activeGlows.keys()) {
+        removeTouchGlow(pointerId);
+    }
+});
 
 
 /* =========================================
-   W IMAGE POPUP
-   Shows for 3 seconds every 24 hours.
+   DAILY IMAGE POPUP
+   Shows at 12:00 p.m. India time.
+   Remains visible for 3 seconds.
 ========================================= */
 
 const popupImage = document.getElementById("popup-image");
-const popupStorageKey = "xbCountdownLastWPopup";
-const popupInterval = 24 * 60 * 60 * 1000;
-const popupDuration = 3000;
 
 let popupTimer = null;
+let lastPopupDate = "";
+
+function getIndiaTimeParts() {
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+    }).formatToParts(new Date());
+
+    return Object.fromEntries(
+        parts
+            .filter(part => part.type !== "literal")
+            .map(part => [part.type, part.value])
+    );
+}
 
 function showPopup() {
     if (popupTimer) {
@@ -697,7 +689,7 @@ function showPopup() {
 
     popupImage.classList.remove("show");
 
-    // Restart the animation cleanly.
+    // Restart the popup animation.
     void popupImage.offsetWidth;
 
     popupImage.classList.add("show");
@@ -705,34 +697,39 @@ function showPopup() {
     popupTimer = setTimeout(() => {
         popupImage.classList.remove("show");
         popupTimer = null;
-    }, popupDuration);
+    }, 3000);
 }
 
-function checkPopupSchedule() {
-    const now = Date.now();
-    const lastShown = Number(
-        localStorage.getItem(popupStorageKey) || 0
-    );
+function checkDailyPopup() {
+    const time = getIndiaTimeParts();
 
-    if (!lastShown || now - lastShown >= popupInterval) {
-        localStorage.setItem(popupStorageKey, String(now));
+    const today =
+        `${time.year}-${time.month}-${time.day}`;
+
+    // Trigger during the 12:00 p.m. minute, once per day.
+    if (
+        time.hour === "12" &&
+        time.minute === "00" &&
+        lastPopupDate !== today
+    ) {
+        lastPopupDate = today;
         showPopup();
     }
 }
 
-// Check on page load.
-checkPopupSchedule();
+// Check immediately and then every second.
+checkDailyPopup();
+setInterval(checkDailyPopup, 1000);
 
-// Check again if the page is revisited after being inactive.
-window.addEventListener("focus", checkPopupSchedule);
+// Check again when the browser returns to the foreground.
+window.addEventListener("focus", checkDailyPopup);
 
 document.addEventListener("visibilitychange", () => {
     if (!document.hidden) {
-        checkPopupSchedule();
+        checkDailyPopup();
     }
 });
-
-// To test the popup manually, run showPopup() in the browser console.
 </script>
+
 </body>
 </html>
