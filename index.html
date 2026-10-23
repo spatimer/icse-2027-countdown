@@ -4,14 +4,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
 <title>X-B Exam Countdown</title>
 
 <style>
 :root {
-    --gold: #ffd34d;
-    --gold-soft: #fff0b5;
-    --gold-dark: #b98719;
+    --gold: #e7b76b;
+    --gold-light: #ffdda0;
 }
 
 * {
@@ -19,119 +17,110 @@
 }
 
 html, body {
-    margin: 0;
     width: 100%;
     height: 100%;
+    margin: 0;
     overflow: hidden;
-    background: #100e0a;
 }
 
 body {
-    color: var(--gold-soft);
-    font-family: "Segoe UI", Arial, sans-serif;
+    background: #071225 url("background.jpg") center center / cover no-repeat;
+    color: var(--gold-light);
+    font-family: Arial, Helvetica, sans-serif;
     user-select: none;
     -webkit-user-select: none;
 }
 
 #wallpaper {
-    position: fixed;
-    inset: 0;
-    background: url("background.jpg") center center / cover no-repeat;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     touch-action: none;
 }
 
-/* COUNTDOWN */
+/* COUNTDOWN PANEL */
 
-.countdown-area {
+.countdown-panel {
     position: absolute;
-    left: 56%;
+    left: 60%;
     top: 44%;
+    width: min(1350px, 72vw);
     transform: translate(-50%, -50%);
-    width: min(1500px, 72vw);
-    padding: clamp(20px, 2.4vw, 48px) clamp(12px, 2vw, 36px);
     text-align: center;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(15,13,9,.91) 0%,
-        rgba(15,13,9,.78) 55%,
-        rgba(15,13,9,.42) 75%,
-        transparent 100%
-    );
+    z-index: 5;
 }
 
-.eyebrow {
+.class-heading {
+    margin: 0 0 12px;
+    color: var(--gold-light);
+    font-size: clamp(18px, 2vw, 30px);
+    font-weight: 600;
+    letter-spacing: 7px;
+    text-shadow: 0 0 14px rgba(255, 190, 80, .3);
+}
+
+.main-heading {
+    margin: 0 0 30px;
+    color: var(--gold-light);
+    font-size: clamp(22px, 3vw, 44px);
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-shadow:
+        0 0 12px rgba(255, 190, 80, .35),
+        0 0 28px rgba(255, 175, 40, .18);
+}
+
+/* COUNTDOWN NUMBERS */
+
+.countdown {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    gap: clamp(12px, 1.8vw, 38px);
-    margin-bottom: clamp(22px, 2.4vw, 48px);
-    color: var(--gold);
-    font-size: clamp(14px, 1.35vw, 30px);
-    letter-spacing: .32em;
-    white-space: nowrap;
-    text-shadow: 0 0 14px rgba(255,196,49,.2);
-}
-
-.eyebrow:before,
-.eyebrow:after {
-    content: "";
-    display: block;
-    width: 18%;
-    max-width: 250px;
-    height: 2px;
-    flex: 0 1 250px;
-    background: var(--gold-dark);
-}
-
-.timer {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: start;
-    gap: clamp(5px, .8vw, 18px);
+    gap: clamp(8px, 1.5vw, 24px);
     width: 100%;
 }
 
-.unit {
+.time-unit {
+    flex: 1 1 0;
     min-width: 0;
+    text-align: center;
 }
 
 .number {
-    color: var(--gold-soft);
-    font-size: clamp(26px, 4.05vw, 82px);
-    font-weight: 750;
+    color: var(--gold-light);
+    font-size: min(4.2vw, 68px);
+    font-weight: 700;
     line-height: 1.1;
-    letter-spacing: -.035em;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
     text-shadow:
-        0 0 5px rgba(255,211,77,.48),
-        0 0 18px rgba(255,174,32,.24);
+        0 0 10px rgba(255, 190, 80, .4),
+        0 0 24px rgba(255, 175, 40, .2);
 }
 
-.label {
-    margin-top: clamp(8px, .8vw, 18px);
+.unit-label {
+    margin-top: 12px;
     color: var(--gold);
-    font-size: clamp(10px, 1.15vw, 23px);
-    letter-spacing: .14em;
-    white-space: nowrap;
+    font-size: clamp(10px, 1.1vw, 16px);
+    font-weight: 600;
+    letter-spacing: 3px;
 }
 
-.class-name {
-    margin-top: clamp(25px, 2.6vw, 54px);
+.colon {
+    flex: 0 0 auto;
     color: var(--gold);
-    font-size: clamp(38px, 3.8vw, 76px);
-    font-weight: 750;
-    line-height: 1.1;
-    letter-spacing: .09em;
-    text-shadow: 0 0 18px rgba(255,183,30,.22);
+    font-size: min(3.6vw, 54px);
+    line-height: 1.05;
+    opacity: .85;
+    text-shadow: 0 0 12px rgba(255, 190, 80, .25);
 }
 
-.subtitle {
-    margin-top: clamp(10px, 1vw, 22px);
-    color: #f6ca55;
-    font-size: clamp(11px, 1.25vw, 25px);
-    letter-spacing: .19em;
-    white-space: nowrap;
+.motivation {
+    margin: 35px 0 0;
+    color: rgba(255, 221, 160, .9);
+    font-size: clamp(12px, 1.3vw, 18px);
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 12px rgba(255, 190, 80, .2);
 }
 
 /* SOUND BUTTON */
@@ -139,349 +128,273 @@ body {
 #soundButton {
     position: fixed;
     top: 22px;
-    right: 24px;
+    right: 22px;
     z-index: 50;
-    display: grid;
-    place-items: center;
     width: 48px;
     height: 48px;
-    padding: 0;
-    border: 1px solid rgba(255,211,77,.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 221, 160, .2);
     border-radius: 50%;
-    color: var(--gold);
-    background: rgba(20,17,12,.32);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(8, 12, 20, .2);
+    color: rgba(255, 221, 160, .65);
+    font-size: 24px;
     cursor: pointer;
-    transition: background 180ms, border-color 180ms, transform 180ms;
+    opacity: .55;
+    transition: opacity .2s, background .2s;
+    -webkit-tap-highlight-color: transparent;
 }
 
 #soundButton:hover {
-    background: rgba(255,194,47,.15);
-    border-color: var(--gold);
-    transform: scale(1.06);
+    opacity: .9;
+    background: rgba(8, 12, 20, .4);
 }
 
 #soundButton:focus-visible {
-    outline: 2px solid var(--gold-soft);
+    outline: 2px solid var(--gold-light);
     outline-offset: 4px;
 }
 
-#soundButton svg {
-    width: 23px;
-    height: 23px;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 1.7;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* GOLDEN TOUCH GLOW */
+/* BRIGHT GOLDEN TOUCH GLOW */
 
 .touch-glow {
     position: fixed;
     z-index: 40;
-    width: 240px;
-    height: 240px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);
     background: radial-gradient(
         circle,
-        rgba(255, 211, 77, .30) 0%,
-        rgba(255, 190, 45, .18) 22%,
-        rgba(255, 175, 25, .09) 45%,
-        rgba(255, 175, 25, 0) 72%
+        rgba(255, 225, 105, .65) 0%,
+        rgba(255, 205, 65, .42) 18%,
+        rgba(255, 180, 25, .23) 40%,
+        rgba(255, 160, 10, .08) 62%,
+        rgba(255, 160, 10, 0) 75%
     );
-    filter: blur(5px);
+    filter: blur(3px);
     mix-blend-mode: screen;
+    will-change: left, top;
 }
 
-/* DAILY POPUP */
+/* DAILY POPUP
+   Transparent PNGs show only their visible pixels.
+*/
 
 #popup-image {
     position: fixed;
-    z-index: 100;
-    top: 50%;
     left: 50%;
-    width: auto;
-    height: auto;
-    max-width: min(80vw, 900px);
-    max-height: 80vh;
+    top: 50%;
+    z-index: 30;
+    width: min(55vw, 650px);
+    max-height: 70vh;
     object-fit: contain;
+    transform: translate(-50%, -50%);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translate(-50%, -46%) scale(.96);
-    filter: drop-shadow(0 0 24px rgba(255, 196, 49, .22));
 }
 
 #popup-image.show {
-    visibility: visible;
-    animation: popupAppear 3s ease-in-out forwards;
+    animation: popupDisplay 3s ease-in-out forwards;
 }
 
-@keyframes popupAppear {
+@keyframes popupDisplay {
     0% {
         opacity: 0;
-        transform: translate(-50%, -46%) scale(.96);
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(.94);
     }
-    12% {
+    15% {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
-    82% {
+    80% {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translate(-50%, -52%) scale(.98);
+        visibility: hidden;
+        transform: translate(-50%, -50%) scale(.98);
     }
 }
 
-/* SMALLER SCREENS */
+/* SMALL SCREEN ADJUSTMENTS */
 
-@media (max-width: 900px) {
-    .countdown-area {
-        left: 56%;
-        width: 86vw;
-        padding: 22px 8px;
+@media (max-width: 700px) {
+    .countdown-panel {
+        left: 50%;
+        top: 45%;
+        width: 94vw;
     }
 
-    .eyebrow {
-        gap: 9px;
-        letter-spacing: .17em;
-        margin-bottom: 20px;
+    .class-heading {
+        letter-spacing: 4px;
     }
 
-    .timer {
-        gap: 3px;
+    .main-heading {
+        margin-bottom: 22px;
+        letter-spacing: 3px;
+    }
+
+    .countdown {
+        gap: 4px;
     }
 
     .number {
-        font-size: clamp(19px, 5.2vw, 42px);
+        font-size: clamp(21px, 5.5vw, 38px);
     }
 
-    .label {
-        font-size: clamp(8px, 1.8vw, 14px);
-        letter-spacing: .05em;
+    .unit-label {
         margin-top: 8px;
+        font-size: 8px;
+        letter-spacing: 1px;
     }
 
-    .class-name {
+    .colon {
+        font-size: 24px;
+    }
+
+    .motivation {
         margin-top: 25px;
-    }
-
-    .subtitle {
-        letter-spacing: .08em;
-    }
-
-    #soundButton {
-        top: 12px;
-        right: 12px;
-        width: 42px;
-        height: 42px;
+        font-size: 12px;
     }
 
     #popup-image {
-        max-width: 88vw;
-        max-height: 75vh;
-    }
-}
-
-@media (max-width: 480px) {
-    .countdown-area {
-        left: 56%;
-        width: 91vw;
-    }
-
-    .eyebrow {
-        font-size: 11px;
-        gap: 6px;
-    }
-
-    .number {
-        font-size: clamp(16px, 4.8vw, 24px);
-    }
-
-    .label {
-        font-size: 7px;
-    }
-
-    .subtitle {
-        font-size: 9px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    #popup-image.show {
-        animation-duration: 3s;
+        width: 80vw;
     }
 }
 </style>
 </head>
 
 <body>
-
 <div id="wallpaper">
-    <main class="countdown-area">
-        <div class="eyebrow">EXAM COUNTDOWN</div>
 
-        <div class="timer">
-            <div class="unit">
+    <button id="soundButton"
+            type="button"
+            aria-label="Enable ticking sound"
+            title="Toggle ticking sound">♩</button>
+
+    <main class="countdown-panel">
+        <h2 class="class-heading">X-B</h2>
+        <h1 class="main-heading">EXAM COUNTDOWN</h1>
+
+        <div class="countdown">
+            <div class="time-unit">
                 <div class="number" id="months">00</div>
-                <div class="label">MONTHS</div>
+                <div class="unit-label">MONTHS</div>
             </div>
 
-            <div class="unit">
+            <div class="colon">:</div>
+
+            <div class="time-unit">
                 <div class="number" id="days">00</div>
-                <div class="label">DAYS</div>
+                <div class="unit-label">DAYS</div>
             </div>
 
-            <div class="unit">
+            <div class="colon">:</div>
+
+            <div class="time-unit">
                 <div class="number" id="hours">00</div>
-                <div class="label">HRS</div>
+                <div class="unit-label">HRS</div>
             </div>
 
-            <div class="unit">
+            <div class="colon">:</div>
+
+            <div class="time-unit">
                 <div class="number" id="minutes">00</div>
-                <div class="label">MIN</div>
+                <div class="unit-label">MIN</div>
             </div>
 
-            <div class="unit">
+            <div class="colon">:</div>
+
+            <div class="time-unit">
                 <div class="number" id="seconds">00</div>
-                <div class="label">SEC</div>
+                <div class="unit-label">SEC</div>
             </div>
         </div>
 
-        <div class="class-name">X-B</div>
-        <div class="subtitle" id="subtitle">
-            COUNTING DOWN TO EXAM DAY
-        </div>
+        <p class="motivation">
+            Every second counts. Every effort matters.
+        </p>
     </main>
+
+    <img id="popup-image" src="popup.png" alt="">
+
 </div>
-
-<!-- Sound button -->
-
-<button
-    id="soundButton"
-    type="button"
-    aria-label="Turn ticking sound on"
-    title="Turn ticking sound on"
->
-    <svg id="soundIcon" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M11 5 6 9H3v6h3l5 4V5Z"/>
-        <path d="M16 9a5 5 0 0 1 0 6"/>
-        <path d="M19 6a9 9 0 0 1 0 12"/>
-    </svg>
-</button>
-
-<!-- Image that appears daily at noon -->
-
-<img
-    id="popup-image"
-    src="popup.png"
-    alt=""
-    aria-hidden="true"
->
 
 <script>
 /* =========================================
    EXAM COUNTDOWN
-   Target: 17 February 2027, 12:00 p.m. IST
+   17 February 2027, 12:00 PM IST
 ========================================= */
 
-const targetDate = new Date("2027-02-17T12:00:00+05:30");
+const TARGET_DATE = new Date("2027-02-17T12:00:00+05:30");
 
-const output = {
-    months: document.getElementById("months"),
-    days: document.getElementById("days"),
-    hours: document.getElementById("hours"),
-    minutes: document.getElementById("minutes"),
-    seconds: document.getElementById("seconds")
-};
-
-const pad = n => String(n).padStart(2, "0");
-
-function addCalendarMonths(date, count) {
-    const result = new Date(date);
-    const day = result.getDate();
-
-    result.setDate(1);
-    result.setMonth(result.getMonth() + count);
-
-    const lastDay = new Date(
-        result.getFullYear(),
-        result.getMonth() + 1,
-        0
-    ).getDate();
-
-    result.setDate(Math.min(day, lastDay));
-
-    return result;
-}
+const monthElement = document.getElementById("months");
+const dayElement = document.getElementById("days");
+const hourElement = document.getElementById("hours");
+const minuteElement = document.getElementById("minutes");
+const secondElement = document.getElementById("seconds");
 
 function updateCountdown() {
     const now = new Date();
 
-    if (now >= targetDate) {
-        Object.values(output).forEach(el => {
-            el.textContent = "00";
-        });
-
-        document.getElementById("subtitle").textContent =
-            "YOUR EXAM DAY IS HERE";
-
+    if (now >= TARGET_DATE) {
+        monthElement.textContent = "00";
+        dayElement.textContent = "00";
+        hourElement.textContent = "00";
+        minuteElement.textContent = "00";
+        secondElement.textContent = "00";
         return;
     }
 
-    let months =
-        (targetDate.getFullYear() - now.getFullYear()) * 12
-        + targetDate.getMonth() - now.getMonth();
+    // Count complete calendar months.
+    let cursor = new Date(now);
+    let months = 0;
 
-    let anchor = addCalendarMonths(now, months);
+    while (true) {
+        const nextMonth = new Date(cursor);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
 
-    if (anchor > targetDate) {
-        months--;
-        anchor = addCalendarMonths(now, months);
+        if (nextMonth > TARGET_DATE) break;
+
+        cursor = nextMonth;
+        months++;
     }
 
-    let remaining = targetDate.getTime() - anchor.getTime();
+    let remaining = TARGET_DATE.getTime() - cursor.getTime();
 
-    const dayMs = 86400000;
-    const hourMs = 3600000;
-    const minuteMs = 60000;
+    const days = Math.floor(remaining / 86400000);
+    remaining -= days * 86400000;
 
-    const days = Math.floor(remaining / dayMs);
-    remaining -= days * dayMs;
+    const hours = Math.floor(remaining / 3600000);
+    remaining -= hours * 3600000;
 
-    const hours = Math.floor(remaining / hourMs);
-    remaining -= hours * hourMs;
-
-    const minutes = Math.floor(remaining / minuteMs);
-    remaining -= minutes * minuteMs;
+    const minutes = Math.floor(remaining / 60000);
+    remaining -= minutes * 60000;
 
     const seconds = Math.floor(remaining / 1000);
 
-    output.months.textContent = pad(months);
-    output.days.textContent = pad(days);
-    output.hours.textContent = pad(hours);
-    output.minutes.textContent = pad(minutes);
-    output.seconds.textContent = pad(seconds);
+    monthElement.textContent = String(months).padStart(2, "0");
+    dayElement.textContent = String(days).padStart(2, "0");
+    hourElement.textContent = String(hours).padStart(2, "0");
+    minuteElement.textContent = String(minutes).padStart(2, "0");
+    secondElement.textContent = String(seconds).padStart(2, "0");
 }
 
 updateCountdown();
-setInterval(updateCountdown, 250);
+setInterval(updateCountdown, 1000);
 
 
 /* =========================================
-   TICKING SOUND
+   TICKING SOUND TOGGLE
 ========================================= */
 
 const soundButton = document.getElementById("soundButton");
-const soundIcon = document.getElementById("soundIcon");
 
 let soundEnabled = false;
 let audioContext = null;
@@ -490,116 +403,93 @@ let tickTimer = null;
 function playTick() {
     if (!soundEnabled || !audioContext) return;
 
-    const now = audioContext.currentTime;
     const oscillator = audioContext.createOscillator();
     const gain = audioContext.createGain();
 
     oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(850, audioContext.currentTime);
 
-    oscillator.frequency.setValueAtTime(1500, now);
-    oscillator.frequency.exponentialRampToValueAtTime(
-        900,
-        now + 0.025
+    gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+        0.035, audioContext.currentTime + 0.005
     );
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.003);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001, audioContext.currentTime + 0.045
+    );
 
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
 
-    oscillator.start(now);
-    oscillator.stop(now + 0.055);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.05);
 }
 
-function setSoundIcon() {
-    if (soundEnabled) {
-        soundButton.setAttribute(
-            "aria-label",
-            "Turn ticking sound off"
-        );
+function startTicking() {
+    stopTicking();
+    playTick();
+    tickTimer = setInterval(playTick, 1000);
+}
 
-        soundButton.title = "Turn ticking sound off";
-
-        soundIcon.innerHTML =
-            '<path d="M11 5 6 9H3v6h3l5 4V5Z"/>' +
-            '<path d="M16 9a5 5 0 0 1 0 6"/>' +
-            '<path d="M19 6a9 9 0 0 1 0 12"/>';
-    } else {
-        soundButton.setAttribute(
-            "aria-label",
-            "Turn ticking sound on"
-        );
-
-        soundButton.title = "Turn ticking sound on";
-
-        soundIcon.innerHTML =
-            '<path d="M11 5 6 9H3v6h3l5 4V5Z"/>' +
-            '<path d="m16 9 5 6"/>' +
-            '<path d="m21 9-5 6"/>';
+function stopTicking() {
+    if (tickTimer !== null) {
+        clearInterval(tickTimer);
+        tickTimer = null;
     }
 }
 
 soundButton.addEventListener("click", async () => {
-    if (soundEnabled) {
-        soundEnabled = false;
-
-        clearInterval(tickTimer);
-        tickTimer = null;
-
-        setSoundIcon();
-        return;
-    }
-
-    const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) {
-        soundButton.title = "Audio is not supported in this browser";
-        return;
-    }
-
     if (!audioContext) {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            soundButton.title = "Audio is not supported";
+            return;
+        }
+
         audioContext = new AudioContextClass();
     }
 
-    try {
+    if (audioContext.state === "suspended") {
         await audioContext.resume();
+    }
 
-        soundEnabled = true;
-        setSoundIcon();
+    soundEnabled = !soundEnabled;
 
-        playTick();
-        tickTimer = setInterval(playTick, 1000);
-    } catch (error) {
-        soundEnabled = false;
-        setSoundIcon();
+    if (soundEnabled) {
+        soundButton.style.opacity = "1";
+        soundButton.setAttribute("aria-label", "Disable ticking sound");
+        startTicking();
+    } else {
+        soundButton.style.opacity = ".55";
+        soundButton.setAttribute("aria-label", "Enable ticking sound");
+        stopTicking();
     }
 });
 
 
 /* =========================================
-   PERSISTENT GOLDEN TOUCH GLOW
-   Supports multiple simultaneous fingers.
+   MULTI-TOUCH GOLDEN GLOW
+   Supports mouse, touch, and pen pointers.
 ========================================= */
 
 const activeGlows = new Map();
 
 function createTouchGlow(pointerId, x, y) {
-    const glow = document.createElement("div");
+    let glow = activeGlows.get(pointerId);
 
-    glow.className = "touch-glow";
-    glow.style.left = x + "px";
-    glow.style.top = y + "px";
+    if (!glow) {
+        glow = document.createElement("div");
+        glow.className = "touch-glow";
+        document.body.appendChild(glow);
+        activeGlows.set(pointerId, glow);
+    }
 
-    document.body.appendChild(glow);
-    activeGlows.set(pointerId, glow);
+    moveTouchGlow(pointerId, x, y);
 }
 
 function moveTouchGlow(pointerId, x, y) {
     const glow = activeGlows.get(pointerId);
-
     if (!glow) return;
 
     glow.style.left = x + "px";
@@ -617,20 +507,15 @@ function removeTouchGlow(pointerId) {
 
 document.addEventListener("pointerdown", event => {
     if (event.target.closest("#soundButton")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
 
-    createTouchGlow(
-        event.pointerId,
-        event.clientX,
-        event.clientY
-    );
+    createTouchGlow(event.pointerId, event.clientX, event.clientY);
 });
 
 document.addEventListener("pointermove", event => {
-    moveTouchGlow(
-        event.pointerId,
-        event.clientX,
-        event.clientY
-    );
+    if (activeGlows.has(event.pointerId)) {
+        moveTouchGlow(event.pointerId, event.clientX, event.clientY);
+    }
 });
 
 document.addEventListener("pointerup", event => {
@@ -645,91 +530,114 @@ document.addEventListener("lostpointercapture", event => {
     removeTouchGlow(event.pointerId);
 });
 
+
+/* =========================================
+   FALLBACK FOR MOUSE-ONLY SMARTBOARDS
+   Prevent duplicate glows for mouse events
+   already handled by pointer events.
+========================================= */
+
+let fallbackMouseActive = false;
+let pointerMouseRecentlyUsed = false;
+let pointerMouseTimeout = null;
+const fallbackMouseId = "smartboard-mouse-fallback";
+
+document.addEventListener("pointerdown", event => {
+    if (event.pointerType !== "mouse") return;
+
+    pointerMouseRecentlyUsed = true;
+    clearTimeout(pointerMouseTimeout);
+
+    pointerMouseTimeout = setTimeout(() => {
+        pointerMouseRecentlyUsed = false;
+    }, 1000);
+});
+
+document.addEventListener("mousedown", event => {
+    if (event.target.closest("#soundButton")) return;
+    if (event.button !== 0 || pointerMouseRecentlyUsed) return;
+
+    fallbackMouseActive = true;
+    createTouchGlow(fallbackMouseId, event.clientX, event.clientY);
+});
+
+document.addEventListener("mousemove", event => {
+    if (!fallbackMouseActive) return;
+
+    moveTouchGlow(fallbackMouseId, event.clientX, event.clientY);
+});
+
+document.addEventListener("mouseup", () => {
+    fallbackMouseActive = false;
+    removeTouchGlow(fallbackMouseId);
+});
+
 window.addEventListener("blur", () => {
     for (const pointerId of activeGlows.keys()) {
         removeTouchGlow(pointerId);
     }
+
+    fallbackMouseActive = false;
 });
 
 
 /* =========================================
-   DAILY IMAGE POPUP
-   Shows at 12:00 p.m. India time.
-   Remains visible for 3 seconds.
+   DAILY POPUP AT 12:00 PM INDIA TIME
+   Display for 3 seconds once per local day.
 ========================================= */
 
 const popupImage = document.getElementById("popup-image");
 
-let popupTimer = null;
 let lastPopupDate = "";
 
-function getIndiaTimeParts() {
-    const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Kolkata",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hourCycle: "h23"
-    }).formatToParts(new Date());
+const indiaTimeFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+});
 
-    return Object.fromEntries(
-        parts
-            .filter(part => part.type !== "literal")
-            .map(part => [part.type, part.value])
-    );
-}
+const indiaHourFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    hourCycle: "h23"
+});
 
-function showPopup() {
-    if (popupTimer) {
-        clearTimeout(popupTimer);
-    }
-
-    popupImage.classList.remove("show");
-
-    // Restart the popup animation.
-    void popupImage.offsetWidth;
-
-    popupImage.classList.add("show");
-
-    popupTimer = setTimeout(() => {
-        popupImage.classList.remove("show");
-        popupTimer = null;
-    }, 3000);
-}
+const indiaMinuteFormatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    minute: "2-digit"
+});
 
 function checkDailyPopup() {
-    const time = getIndiaTimeParts();
+    const now = new Date();
 
-    const today =
-        `${time.year}-${time.month}-${time.day}`;
+    const indiaDate = indiaTimeFormatter.format(now);
+    const indiaHour = indiaHourFormatter.format(now);
+    const indiaMinute = indiaMinuteFormatter.format(now);
 
-    // Trigger during the 12:00 p.m. minute, once per day.
     if (
-        time.hour === "12" &&
-        time.minute === "00" &&
-        lastPopupDate !== today
+        indiaHour === "12" &&
+        indiaMinute === "00" &&
+        lastPopupDate !== indiaDate
     ) {
-        lastPopupDate = today;
-        showPopup();
+        lastPopupDate = indiaDate;
+
+        popupImage.classList.remove("show");
+
+        // Restart the animation if necessary.
+        void popupImage.offsetWidth;
+
+        popupImage.classList.add("show");
+
+        setTimeout(() => {
+            popupImage.classList.remove("show");
+        }, 3100);
     }
 }
 
-// Check immediately and then every second.
 checkDailyPopup();
 setInterval(checkDailyPopup, 1000);
 
-// Check again when the browser returns to the foreground.
-window.addEventListener("focus", checkDailyPopup);
-
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-        checkDailyPopup();
-    }
-});
 </script>
-
 </body>
 </html>
