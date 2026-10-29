@@ -389,7 +389,7 @@ body {
     aria-hidden="true"
 >
 
-<!-- Second popup: daily at 12:15 p.m. IST -->
+<!-- Second popup: daily at 2:30 p.m. IST -->
 
 <img
     id="popup-image-1215"
@@ -667,7 +667,7 @@ window.addEventListener("blur", () => {
 /* =========================================
    DAILY POPUPS
    Popup 1: 12:00 p.m. India time
-   Popup 2: 12:15 p.m. India time
+   Popup 2: 2:30 p.m. India time
    Each remains visible for 3 seconds.
 ========================================= */
 
@@ -736,10 +736,10 @@ function checkDailyPopups() {
         showPopup(popupNoon, "noon");
     }
 
-    // Second popup: 12:15 p.m. IST, once per day.
+    // Second popup: 2:30 p.m. IST, once per day.
     if (
-        time.hour === "12" &&
-        time.minute === "15" &&
+        time.hour === "14" &&
+        time.minute === "30" &&
         lastPopupDates.afternoon !== today
     ) {
         lastPopupDates.afternoon = today;
