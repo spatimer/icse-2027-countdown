@@ -177,7 +177,7 @@ body {
     stroke-linejoin: round;
 }
 
-/* BRIGHTER GOLDEN TOUCH GLOW */
+/* GOLDEN TOUCH GLOW */
 
 .touch-glow {
     position: fixed;
@@ -199,7 +199,7 @@ body {
     mix-blend-mode: screen;
 }
 
-/* DAILY POPUP IMAGES */
+/* DAILY RANDOM POPUP */
 
 .popup-image {
     position: fixed;
@@ -364,7 +364,7 @@ body {
     </main>
 </div>
 
-<!-- Sound button -->
+<!-- SOUND BUTTON -->
 
 <button
     id="soundButton"
@@ -379,22 +379,36 @@ body {
     </svg>
 </button>
 
-<!-- Original popup: daily at 12:00 p.m. IST -->
+<!-- FOUR RANDOM POPUP IMAGES -->
 
 <img
-    id="popup-image-noon"
+    id="popup-image-1"
     class="popup-image"
     src="popup.png"
     alt=""
     aria-hidden="true"
 >
 
-<!-- Second popup: daily at 2:30 p.m. IST -->
-
 <img
-    id="popup-image-1215"
+    id="popup-image-2"
     class="popup-image"
     src="popup2.png"
+    alt=""
+    aria-hidden="true"
+>
+
+<img
+    id="popup-image-3"
+    class="popup-image"
+    src="popup3.png"
+    alt=""
+    aria-hidden="true"
+>
+
+<img
+    id="popup-image-4"
+    class="popup-image"
+    src="popup4.png"
     alt=""
     aria-hidden="true"
 >
@@ -592,15 +606,15 @@ soundButton.addEventListener("click", async () => {
 
 
 /* =========================================
-   PERSISTENT GOLDEN TOUCH GLOW
-   Supports multiple simultaneous fingers.
+   RELIABLE GOLDEN TOUCH GLOW
 ========================================= */
 
 const activeGlows = new Map();
 
 function createTouchGlow(pointerId, x, y) {
-    const glow = document.createElement("div");
+    removeTouchGlow(pointerId);
 
+    const glow = document.createElement("div");
     glow.className = "touch-glow";
     glow.style.left = x + "px";
     glow.style.top = y + "px";
@@ -627,8 +641,21 @@ function removeTouchGlow(pointerId) {
     }
 }
 
+function clearAllTouchGlows() {
+    for (const glow of activeGlows.values()) {
+        glow.remove();
+    }
+
+    activeGlows.clear();
+
+    document.querySelectorAll(".touch-glow").forEach(glow => {
+        glow.remove();
+    });
+}
+
 document.addEventListener("pointerdown", event => {
     if (event.target.closest("#soundButton")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
 
     createTouchGlow(
         event.pointerId,
@@ -653,36 +680,32 @@ document.addEventListener("pointercancel", event => {
     removeTouchGlow(event.pointerId);
 });
 
-document.addEventListener("lostpointercapture", event => {
-    removeTouchGlow(event.pointerId);
-});
+window.addEventListener("blur", clearAllTouchGlows);
 
-window.addEventListener("blur", () => {
-    for (const pointerId of activeGlows.keys()) {
-        removeTouchGlow(pointerId);
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        clearAllTouchGlows();
     }
 });
 
 
 /* =========================================
-   DAILY POPUPS
-   Popup 1: 12:00 p.m. India time
-   Popup 2: 2:30 p.m. India time
-   Each remains visible for 3 seconds.
+   DAILY RANDOM POPUPS
+   Four images; one randomly selected per day.
+   Time: 2:30 p.m. India Standard Time.
+   Duration: 3 seconds.
+   Stops at the countdown target.
 ========================================= */
 
-const popupNoon = document.getElementById("popup-image-noon");
-const popup1215 = document.getElementById("popup-image-1215");
+const popupImages = [
+    document.getElementById("popup-image-1"),
+    document.getElementById("popup-image-2"),
+    document.getElementById("popup-image-3"),
+    document.getElementById("popup-image-4")
+];
 
-const popupTimers = {
-    noon: null,
-    afternoon: null
-};
-
-const lastPopupDates = {
-    noon: "",
-    afternoon: ""
-};
+let popupTimer = null;
+let lastPopupDate = "";
 
 function getIndiaTimeParts() {
     const parts = new Intl.DateTimeFormat("en-GB", {
@@ -703,60 +726,76 @@ function getIndiaTimeParts() {
     );
 }
 
-function showPopup(image, timerKey) {
-    if (popupTimers[timerKey]) {
-        clearTimeout(popupTimers[timerKey]);
+function hideAllPopups() {
+    popupImages.forEach(image => {
+        image.classList.remove("show");
+    });
+}
+
+function showRandomPopup() {
+    // Never show a popup at or after the countdown target.
+    if (Date.now() >= targetDate.getTime()) return;
+
+    hideAllPopups();
+
+    const randomIndex = Math.floor(Math.random() * popupImages.length);
+    const selectedImage = popupImages[randomIndex];
+
+    // Restart the animation cleanly.
+    void selectedImage.offsetWidth;
+    selectedImage.classList.add("show");
+
+    if (popupTimer) {
+        clearTimeout(popupTimer);
     }
 
-    image.classList.remove("show");
-
-    // Restart the popup animation.
-    void image.offsetWidth;
-
-    image.classList.add("show");
-
-    popupTimers[timerKey] = setTimeout(() => {
-        image.classList.remove("show");
-        popupTimers[timerKey] = null;
+    popupTimer = setTimeout(() => {
+        selectedImage.classList.remove("show");
+        popupTimer = null;
     }, 3000);
 }
 
-function checkDailyPopups() {
-    const time = getIndiaTimeParts();
+function checkDailyPopup() {
+    const now = new Date();
 
-    const today = `${time.year}-${time.month}-${time.day}`;
+    // Stop all popup activity when the countdown reaches zero.
+    if (now >= targetDate) {
+        hideAllPopups();
 
-    // Original popup: 12:00 p.m. IST, once per day.
-    if (
-        time.hour === "12" &&
-        time.minute === "00" &&
-        lastPopupDates.noon !== today
-    ) {
-        lastPopupDates.noon = today;
-        showPopup(popupNoon, "noon");
+        if (popupTimer) {
+            clearTimeout(popupTimer);
+            popupTimer = null;
+        }
+
+        return;
     }
 
-    // Second popup: 2:30 p.m. IST, once per day.
+    const time = getIndiaTimeParts();
+    const today = `${time.year}-${time.month}-${time.day}`;
+
+    // One random image each day at 2:30 p.m. IST.
     if (
         time.hour === "14" &&
         time.minute === "30" &&
-        lastPopupDates.afternoon !== today
+        lastPopupDate !== today
     ) {
-        lastPopupDates.afternoon = today;
-        showPopup(popup1215, "afternoon");
+        lastPopupDate = today;
+        showRandomPopup();
     }
 }
 
-// Check immediately and then every second.
-checkDailyPopups();
-setInterval(checkDailyPopups, 1000);
+// Check immediately, then every second.
+checkDailyPopup();
+setInterval(checkDailyPopup, 1000);
 
-// Check again when the browser returns to the foreground.
-window.addEventListener("focus", checkDailyPopups);
+// Recheck if the page returns to the foreground.
+window.addEventListener("focus", checkDailyPopup);
 
 document.addEventListener("visibilitychange", () => {
     if (!document.hidden) {
-        checkDailyPopups();
+        checkDailyPopup();
+    } else {
+        clearAllTouchGlows();
     }
 });
 </script>
