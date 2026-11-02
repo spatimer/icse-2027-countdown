@@ -978,16 +978,14 @@ function startHoldEffect(event) {
             }
 
             holdW.classList.remove("show");
-            holdW.style.visibility = "hidden";
 
-            // Restart the animation.
+            // Restart the animation. CSS controls visibility.
             void holdW.offsetWidth;
 
             holdW.classList.add("show");
 
             holdWTimeout = setTimeout(() => {
                 holdW.classList.remove("show");
-                holdW.style.visibility = "hidden";
                 holdWTimeout = null;
             }, HOLD_W_DURATION);
         }
