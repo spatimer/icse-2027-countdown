@@ -199,7 +199,7 @@ body {
     mix-blend-mode: screen;
 }
 
-/* DAILY RANDOM POPUP */
+/* RANDOM POPUP IMAGES */
 
 .popup-image {
     position: fixed;
@@ -379,15 +379,7 @@ body {
     </svg>
 </button>
 
-<!-- FOUR RANDOM POPUP IMAGES -->
-
-<img
-    id="popup-image-1"
-    class="popup-image"
-    src="popup.png"
-    alt=""
-    aria-hidden="true"
->
+<!-- ONLY THESE THREE POPUP IMAGES ARE USED -->
 
 <img
     id="popup-image-2"
@@ -642,10 +634,7 @@ function removeTouchGlow(pointerId) {
 }
 
 function clearAllTouchGlows() {
-    for (const glow of activeGlows.values()) {
-        glow.remove();
-    }
-
+    activeGlows.forEach(glow => glow.remove());
     activeGlows.clear();
 
     document.querySelectorAll(".touch-glow").forEach(glow => {
@@ -680,6 +669,10 @@ document.addEventListener("pointercancel", event => {
     removeTouchGlow(event.pointerId);
 });
 
+document.addEventListener("lostpointercapture", event => {
+    removeTouchGlow(event.pointerId);
+});
+
 window.addEventListener("blur", clearAllTouchGlows);
 
 document.addEventListener("visibilitychange", () => {
@@ -691,21 +684,23 @@ document.addEventListener("visibilitychange", () => {
 
 /* =========================================
    DAILY RANDOM POPUPS
-   Four images; one randomly selected per day.
-   Time: 2:30 p.m. India Standard Time.
-   Duration: 3 seconds.
-   Stops at the countdown target.
+   Images: popup2.png, popup3.png, popup4.png
+   Time: 2:30 p.m. IST
+   Duration: 3 seconds
+   One popup per day
+   Stops at countdown target
 ========================================= */
 
 const popupImages = [
-    document.getElementById("popup-image-1"),
     document.getElementById("popup-image-2"),
     document.getElementById("popup-image-3"),
     document.getElementById("popup-image-4")
 ];
 
 let popupTimer = null;
-let lastPopupDate = "";
+
+/* Store the date so reloading the page won't repeat today's popup. */
+const POPUP_STORAGE_KEY = "xbExamCountdownLastPopupDate";
 
 function getIndiaTimeParts() {
     const parts = new Intl.DateTimeFormat("en-GB", {
@@ -733,15 +728,16 @@ function hideAllPopups() {
 }
 
 function showRandomPopup() {
-    // Never show a popup at or after the countdown target.
     if (Date.now() >= targetDate.getTime()) return;
 
     hideAllPopups();
 
-    const randomIndex = Math.floor(Math.random() * popupImages.length);
+    const randomIndex = Math.floor(
+        Math.random() * popupImages.length
+    );
+
     const selectedImage = popupImages[randomIndex];
 
-    // Restart the animation cleanly.
     void selectedImage.offsetWidth;
     selectedImage.classList.add("show");
 
@@ -758,7 +754,6 @@ function showRandomPopup() {
 function checkDailyPopup() {
     const now = new Date();
 
-    // Stop all popup activity when the countdown reaches zero.
     if (now >= targetDate) {
         hideAllPopups();
 
@@ -773,22 +768,32 @@ function checkDailyPopup() {
     const time = getIndiaTimeParts();
     const today = `${time.year}-${time.month}-${time.day}`;
 
-    // One random image each day at 2:30 p.m. IST.
+    let lastPopupDate = "";
+
+    try {
+        lastPopupDate = localStorage.getItem(POPUP_STORAGE_KEY) || "";
+    } catch (error) {
+        // Continue without saved storage if unavailable.
+    }
+
     if (
         time.hour === "14" &&
         time.minute === "30" &&
         lastPopupDate !== today
     ) {
-        lastPopupDate = today;
+        try {
+            localStorage.setItem(POPUP_STORAGE_KEY, today);
+        } catch (error) {
+            // The in-memory fallback below still prevents repeats this session.
+        }
+
         showRandomPopup();
     }
 }
 
-// Check immediately, then every second.
 checkDailyPopup();
 setInterval(checkDailyPopup, 1000);
 
-// Recheck if the page returns to the foreground.
 window.addEventListener("focus", checkDailyPopup);
 
 document.addEventListener("visibilitychange", () => {
