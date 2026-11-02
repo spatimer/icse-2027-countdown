@@ -220,7 +220,7 @@ body {
 
 .popup-image.show {
     visibility: visible;
-    animation: popupAppear 3s ease-in-out forwards;
+    animation: popupAppear 5s ease-in-out forwards;
 }
 
 @keyframes popupAppear {
@@ -239,6 +239,90 @@ body {
     100% {
         opacity: 0;
         transform: translate(-50%, -52%) scale(.98);
+    }
+}
+
+/* HIDDEN 12-SECOND W HOLD EFFECT */
+
+#holdProgress {
+    position: fixed;
+    z-index: 190;
+    left: 50%;
+    bottom: 7%;
+    transform: translateX(-50%);
+    width: min(360px, 55vw);
+    height: 4px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(255, 211, 77, .18);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#holdProgressFill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: #ffd34d;
+    box-shadow: 0 0 12px rgba(255, 211, 77, .8);
+}
+
+#holdProgress.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+#holdW {
+    position: fixed;
+    z-index: 180;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    color: #ffe9a0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: min(68vw, 68vh);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -.045em;
+    text-shadow:
+        0 0 8px rgba(255, 211, 77, .95),
+        0 0 28px rgba(255, 190, 45, .8),
+        0 0 70px rgba(255, 170, 20, .5);
+}
+
+#holdW.show {
+    visibility: visible;
+    animation: goldenWAppear 5s ease-in-out forwards;
+}
+
+@keyframes goldenWAppear {
+    0% {
+        opacity: 0;
+        transform: scale(.72);
+        filter: brightness(.7);
+    }
+    12% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1.3);
+    }
+    25% {
+        filter: brightness(1);
+    }
+    75% {
+        opacity: 1;
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.06);
+        filter: brightness(1.15);
     }
 }
 
@@ -318,7 +402,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
     .popup-image.show {
-        animation-duration: 3s;
+        animation-duration: 5s;
     }
 }
 </style>
@@ -363,6 +447,14 @@ body {
         </div>
     </main>
 </div>
+
+<!-- HIDDEN HOLD PROGRESS AND W EFFECT -->
+
+<div id="holdProgress" aria-hidden="true">
+    <div id="holdProgressFill"></div>
+</div>
+
+<div id="holdW" aria-hidden="true">W</div>
 
 <!-- SOUND BUTTON -->
 
@@ -686,7 +778,7 @@ document.addEventListener("visibilitychange", () => {
    DAILY RANDOM POPUPS
    Images: popup2.png, popup3.png, popup4.png
    Time: 2:30 p.m. IST
-   Duration: 3 seconds
+   Duration: 5 seconds
    One popup per day
    Stops at countdown target
 ========================================= */
@@ -699,7 +791,6 @@ const popupImages = [
 
 let popupTimer = null;
 
-/* Store the date so reloading the page won't repeat today's popup. */
 const POPUP_STORAGE_KEY = "xbExamCountdownLastPopupDate";
 
 function getIndiaTimeParts() {
@@ -748,7 +839,7 @@ function showRandomPopup() {
     popupTimer = setTimeout(() => {
         selectedImage.classList.remove("show");
         popupTimer = null;
-    }, 3000);
+    }, 5000);
 }
 
 function checkDailyPopup() {
@@ -784,7 +875,7 @@ function checkDailyPopup() {
         try {
             localStorage.setItem(POPUP_STORAGE_KEY, today);
         } catch (error) {
-            // The in-memory fallback below still prevents repeats this session.
+            // Continue with in-memory checking.
         }
 
         showRandomPopup();
@@ -803,6 +894,158 @@ document.addEventListener("visibilitychange", () => {
         clearAllTouchGlows();
     }
 });
+
+
+/* =========================================
+   HIDDEN 12-SECOND HOLD-TO-SHOW-W EFFECT
+   First 8 seconds: completely hidden
+   Last 4 seconds: progress bar
+   At 12 seconds: animated W appears
+   W duration: 5 seconds
+========================================= */
+
+const holdProgress = document.getElementById("holdProgress");
+const holdProgressFill = document.getElementById("holdProgressFill");
+const holdW = document.getElementById("holdW");
+
+const HOLD_REVEAL_DELAY = 8000;
+const HOLD_TRIGGER_TIME = 12000;
+const HOLD_W_DURATION = 5000;
+
+let holdStartTime = 0;
+let holdPointerId = null;
+let holdCheckTimer = null;
+let holdTriggered = false;
+let holdWTimeout = null;
+
+function resetHoldEffect() {
+    if (holdCheckTimer !== null) {
+        clearInterval(holdCheckTimer);
+        holdCheckTimer = null;
+    }
+
+    holdStartTime = 0;
+    holdPointerId = null;
+    holdTriggered = false;
+
+    holdProgress.classList.remove("visible");
+    holdProgressFill.style.width = "0%";
+}
+
+function startHoldEffect(event) {
+    if (event.target.closest("#soundButton")) return;
+
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    // Only one pointer can start the hold.
+    if (holdPointerId !== null) return;
+
+    resetHoldEffect();
+
+    holdPointerId = event.pointerId;
+    holdStartTime = performance.now();
+
+    holdCheckTimer = setInterval(() => {
+        if (holdTriggered) return;
+
+        const elapsed = performance.now() - holdStartTime;
+
+        // The first 8 seconds remain completely hidden.
+        if (elapsed >= HOLD_REVEAL_DELAY) {
+            holdProgress.classList.add("visible");
+
+            const progress = Math.min(
+                100,
+                ((elapsed - HOLD_REVEAL_DELAY) /
+                    (HOLD_TRIGGER_TIME - HOLD_REVEAL_DELAY)) * 100
+            );
+
+            holdProgressFill.style.width = progress + "%";
+        }
+
+        // Trigger the W after 12 seconds.
+        if (elapsed >= HOLD_TRIGGER_TIME) {
+            holdTriggered = true;
+
+            clearInterval(holdCheckTimer);
+            holdCheckTimer = null;
+
+            holdProgress.classList.remove("visible");
+            holdProgressFill.style.width = "0%";
+
+            if (holdWTimeout !== null) {
+                clearTimeout(holdWTimeout);
+            }
+
+            holdW.classList.remove("show");
+            holdW.style.visibility = "hidden";
+
+            // Restart the animation.
+            void holdW.offsetWidth;
+
+            holdW.classList.add("show");
+
+            holdWTimeout = setTimeout(() => {
+                holdW.classList.remove("show");
+                holdW.style.visibility = "hidden";
+                holdWTimeout = null;
+            }, HOLD_W_DURATION);
+        }
+    }, 40);
+}
+
+function endHoldEffect(event) {
+    if (holdPointerId === null) return;
+
+    // Ignore release events from other pointers.
+    if (
+        event &&
+        event.pointerId !== undefined &&
+        event.pointerId !== holdPointerId
+    ) {
+        return;
+    }
+
+    // Once triggered, the W finishes its full 5-second animation.
+    if (holdTriggered) {
+        holdPointerId = null;
+        return;
+    }
+
+    // Releasing before 12 seconds cancels the effect.
+    resetHoldEffect();
+}
+
+document.addEventListener("pointerdown", startHoldEffect, {
+    passive: true
+});
+
+document.addEventListener("pointerup", endHoldEffect, {
+    passive: true
+});
+
+document.addEventListener("pointercancel", endHoldEffect, {
+    passive: true
+});
+
+window.addEventListener("blur", () => {
+    if (!holdTriggered) {
+        resetHoldEffect();
+    } else {
+        holdPointerId = null;
+    }
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        if (!holdTriggered) {
+            resetHoldEffect();
+        } else {
+            holdPointerId = null;
+        }
+    }
+});
+
 </script>
 
 </body>
