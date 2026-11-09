@@ -471,31 +471,7 @@ body {
     </svg>
 </button>
 
-<!-- ONLY THESE THREE POPUP IMAGES ARE USED -->
-
-<img
-    id="popup-image-2"
-    class="popup-image"
-    src="popup2.png"
-    alt=""
-    aria-hidden="true"
->
-
-<img
-    id="popup-image-3"
-    class="popup-image"
-    src="popup3.png"
-    alt=""
-    aria-hidden="true"
->
-
-<img
-    id="popup-image-4"
-    class="popup-image"
-    src="popup4.png"
-    alt=""
-    aria-hidden="true"
->
+<!-- POPUP IMAGES ARE CREATED AND CHECKED BY JAVASCRIPT -->
 
 <script>
 /* =========================================
@@ -776,22 +752,167 @@ document.addEventListener("visibilitychange", () => {
 
 /* =========================================
    DAILY RANDOM POPUPS
-   Images: popup2.png, popup3.png, popup4.png
+   Images: popup2.png to popup10.png
    Time: 2:30 p.m. IST
    Duration: 5 seconds
    One popup per day
    Stops at countdown target
+
+   Missing or empty images are skipped.
 ========================================= */
 
-const popupImages = [
-    document.getElementById("popup-image-2"),
-    document.getElementById("popup-image-3"),
-    document.getElementById("popup-image-4")
-];
+const popupImages = [];
+
+for (let i = 2; i <= 10; i++) {
+    const image = document.createElement("img");
+
+    image.className = "popup-image";
+    image.alt = "";
+    image.setAttribute("aria-hidden", "true");
+
+    image.dataset.popupNumber = i;
+
+    document.body.appendChild(image);
+    popupImages.push(image);
+}
 
 let popupTimer = null;
 
 const POPUP_STORAGE_KEY = "xbExamCountdownLastPopupDate";
+
+/* Check whether an image actually contains visible content. */
+
+function imageHasContent(image) {
+    try {
+        if (!image.complete || image.naturalWidth === 0) {
+            return false;
+        }
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d", {
+            willReadFrequently: true
+        });
+
+        if (!context) return true;
+
+        const width = Math.min(image.naturalWidth, 100);
+        const height = Math.min(image.naturalHeight, 100);
+
+        canvas.width = width;
+        canvas.height = height;
+
+        context.drawImage(image, 0, 0, width, height);
+
+        const pixels = context.getImageData(
+            0, 0, width, height
+        ).data;
+
+        let visiblePixels = 0;
+
+        for (let i = 3; i < pixels.length; i += 4) {
+            if (pixels[i] > 10) {
+                visiblePixels++;
+            }
+        }
+
+        return visiblePixels > 0;
+    } catch (error) {
+        // If pixel checking is blocked, a successfully loaded image
+        // is still treated as valid.
+        return image.complete && image.naturalWidth > 0;
+    }
+}
+
+/* Load an image and reject missing or completely transparent files. */
+
+function checkPopupImage(image) {
+    return new Promise(resolve => {
+        image.onload = () => {
+            resolve(imageHasContent(image));
+        };
+
+        image.onerror = () => {
+            resolve(false);
+        };
+
+        image.src = `popup${image.dataset.popupNumber}.png`;
+
+        // Handle images that are already cached.
+        if (image.complete) {
+            resolve(imageHasContent(image));
+        }
+    });
+}
+
+/* Shuffle the popup images so the checking order is random. */
+
+function shufflePopupImages(images) {
+    const shuffled = [...images];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[j]] = [
+            shuffled[j],
+            shuffled[i]
+        ];
+    }
+
+    return shuffled;
+}
+
+/* Try images one by one until a valid image is found. */
+
+async function findRandomValidPopup() {
+    const shuffledImages = shufflePopupImages(popupImages);
+
+    for (const image of shuffledImages) {
+        const isValid = await checkPopupImage(image);
+
+        if (isValid) {
+            return image;
+        }
+    }
+
+    // No valid popup image was found.
+    return null;
+}
+
+function hideAllPopups() {
+    popupImages.forEach(image => {
+        image.classList.remove("show");
+    });
+}
+
+async function showRandomPopup() {
+    if (Date.now() >= targetDate.getTime()) return;
+
+    hideAllPopups();
+
+    const selectedImage = await findRandomValidPopup();
+
+    // Stop if all nine images are missing or empty.
+    if (!selectedImage) {
+        return;
+    }
+
+    // Check again in case the countdown target has passed.
+    if (Date.now() >= targetDate.getTime()) {
+        return;
+    }
+
+    void selectedImage.offsetWidth;
+    selectedImage.classList.add("show");
+
+    if (popupTimer) {
+        clearTimeout(popupTimer);
+    }
+
+    popupTimer = setTimeout(() => {
+        selectedImage.classList.remove("show");
+        popupTimer = null;
+    }, 5000);
+}
 
 function getIndiaTimeParts() {
     const parts = new Intl.DateTimeFormat("en-GB", {
@@ -810,36 +931,6 @@ function getIndiaTimeParts() {
             .filter(part => part.type !== "literal")
             .map(part => [part.type, part.value])
     );
-}
-
-function hideAllPopups() {
-    popupImages.forEach(image => {
-        image.classList.remove("show");
-    });
-}
-
-function showRandomPopup() {
-    if (Date.now() >= targetDate.getTime()) return;
-
-    hideAllPopups();
-
-    const randomIndex = Math.floor(
-        Math.random() * popupImages.length
-    );
-
-    const selectedImage = popupImages[randomIndex];
-
-    void selectedImage.offsetWidth;
-    selectedImage.classList.add("show");
-
-    if (popupTimer) {
-        clearTimeout(popupTimer);
-    }
-
-    popupTimer = setTimeout(() => {
-        selectedImage.classList.remove("show");
-        popupTimer = null;
-    }, 5000);
 }
 
 function checkDailyPopup() {
